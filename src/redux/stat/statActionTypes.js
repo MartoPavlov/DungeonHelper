@@ -1,0 +1,2 @@
+export const INCREMENT_STAT = 'INCREMENT_STAT';
+export const DECREMENT_STAT = 'DECREMENT_STAT';

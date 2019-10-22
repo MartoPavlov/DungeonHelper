@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import InputField from '../components/InputField';
 import SelectionList from '../components/SelectionList';
 import SmallInputField from '../components/SmallInputField';
-import StatCounter from '../components/StatCounter';
+import Section from '../components/Section';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -11,14 +11,6 @@ export default class CreateCharacter extends Component {
       name: '',
       level: 0,
       hp: 0,
-      stats: {
-        Strength: 8,
-        Dexterity: 8,
-        Constitution: 8,
-        Intellect: 8,
-        Wisdom: 8,
-        Charisma: 8,
-      }
     };
 
     this.handleOnNameChanged = this.handleOnNameChanged.bind(this);
@@ -45,6 +37,7 @@ export default class CreateCharacter extends Component {
   }
 
   render() {
+    //create an array with the numbers from 1 to 20
     const levels = Array.from({length: 20}, (v, number) => number + 1);
 
     return (
@@ -64,7 +57,7 @@ export default class CreateCharacter extends Component {
           value={this.state.hp}
           onChange={this.handleOnHPChange}
         />
-        <StatCounter label="Strength" />
+        <Section title="Stats" dictionary={} />
       </div>
     );
   }
