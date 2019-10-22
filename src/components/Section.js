@@ -1,14 +1,17 @@
 import React from 'react';
-import StatCounter from './StatCounter';
 
-const Section = ({title, dictionary}) => {
-  const items = dictionary.map((item) => {
-    return <StatCounter key={item} label={item} />
+const Section = ({title, fields, builderItem}) => {
+  const items = fields.map((item) => {
+    return (
+      <div key={item}>
+        {builderItem(item)}
+      </div>
+    );
   });
   
   return (
     <div>
-      <label className="title">{title}</label>
+      <div className="title">{title}</div>
       {items}
     </div>
   );

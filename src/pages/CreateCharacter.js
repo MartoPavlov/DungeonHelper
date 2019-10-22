@@ -3,6 +3,9 @@ import InputField from '../components/InputField';
 import SelectionList from '../components/SelectionList';
 import SmallInputField from '../components/SmallInputField';
 import Section from '../components/Section';
+import StatCounter from '../components/StatCounter';
+import SpellCounter from '../components/SpellCounter';
+import {STATS, SPELL_SLOTS} from '../utility/constants';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -37,7 +40,7 @@ export default class CreateCharacter extends Component {
   }
 
   render() {
-    //create an array with the numbers from 1 to 20
+    // creates an array with the numbers from 1 to 20
     const levels = Array.from({length: 20}, (v, number) => number + 1);
 
     return (
@@ -57,7 +60,20 @@ export default class CreateCharacter extends Component {
           value={this.state.hp}
           onChange={this.handleOnHPChange}
         />
-        <Section title="Stats" dictionary={} />
+        <Section
+          title="Stats"
+          fields={STATS}
+          builderItem={(label) => {
+            return <StatCounter label={label} />
+          }}
+        />
+        <Section
+          title="Spell Slots"
+          fields={SPELL_SLOTS}
+          builderItem={(label) => {
+            return <SpellCounter label={label} />
+          }}
+        />
       </div>
     );
   }

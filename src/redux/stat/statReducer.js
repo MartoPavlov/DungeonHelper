@@ -9,7 +9,7 @@ const initialState = {
   charisma: 8,
 };
 
-const stateReducer = (state = initialState, action) => {
+const statReducer = (state = initialState, action) => {
   const currentValue = state[action.stat];
 
   switch(action.type) {
@@ -25,5 +25,5 @@ const stateReducer = (state = initialState, action) => {
   }
 }
 
-export default stateReducer;
+export default statReducer;
 
