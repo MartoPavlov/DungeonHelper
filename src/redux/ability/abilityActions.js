@@ -1,14 +1,9 @@
 import {ABILITY_ADD, ABILITY_EDIT, ABILITY_USE} from './abilityActionTypes';
 
-export const addAbility = (name, maxUses, cooldown) => {
+export const addAbility = (ability) => {
   return {
     type: ABILITY_ADD,
-    ability: {
-      name: name,
-      uses: maxUses,
-      maxUses: maxUses,
-      cooldown: cooldown,
-    },
+    ability: ability,
   };
 }
 

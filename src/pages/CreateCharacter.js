@@ -7,6 +7,7 @@ import StatCounter from '../components/StatCounter';
 import SpellCounter from '../components/SpellCounter';
 import {STATS, SPELL_SLOTS} from '../utility/constants';
 import ModalSection from '../components/ModalSection';
+import AbilityAdder from '../components/AbilityAdder';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -76,8 +77,8 @@ export default class CreateCharacter extends Component {
             return <SpellCounter label={label} />
           }}
         />
-        <ModalSection title="Abilities" label="Add">
-          
+        <ModalSection title="Abilities" label="ADD">
+          <AbilityAdder />
         </ModalSection>
       </div>
     );

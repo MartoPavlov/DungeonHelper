@@ -4,6 +4,26 @@ const initialState = {
   abilities: [],
 }
 
+const abilityExists = (state, name) => {
+  const tempAbilities = state.abilities;
+  
+  for (let i=0; i<tempAbilities.length; i++) {
+    if (tempAbilities[i].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const addAbility = (state, action) => {
+  const tempAbilities = state.abilities;
+
+  if (!abilityExists(state, action.name)) {
+    tempAbilities.push(action.ability);
+  }
+  return tempAbilities;
+}
+
 const editAbility = (state, action) => {
   const {originalName, ability} = action;
   const tempAbilities = state.abilities;
@@ -17,7 +37,7 @@ const editAbility = (state, action) => {
   return tempAbilities;
 }
 
-const useAbility = (state, name) => {
+const useeAbility = (state, name) => {
   const tempAbilities = state.abilities;
   
   for (let i=0; i<tempAbilities.length; i++) {
@@ -30,13 +50,10 @@ const useAbility = (state, name) => {
 }
 
 const abilityReducer = (state = initialState, action) => {
-  const tempAbilities = state.abilities;
-
   switch(action.type) {
     case ABILITY_ADD:
-      tempAbilities.push(action.ability)
       return {
-        abilities: tempAbilities,
+        abilities: addAbility(state, action),
       };
     case ABILITY_EDIT:
       return {
@@ -44,7 +61,7 @@ const abilityReducer = (state = initialState, action) => {
       };
     case ABILITY_USE:
       return {
-        abilities: useAbility(state, action.name),
+        abilities: useeAbility(state, action.name),
       };
     default:
       return state;

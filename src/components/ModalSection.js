@@ -16,7 +16,7 @@ const ModalSection = ({title, label, children}) => {
       >
         <div className={css(styles.modalContent)}>{children}</div>
       </Modal>
-      <Button onClick={() => {setOpen(true)}}>{label}</Button>
+      <Button onClick={() => {setOpen(true)}} fontSize={18}>{label}</Button>
     </div>
   );
 }

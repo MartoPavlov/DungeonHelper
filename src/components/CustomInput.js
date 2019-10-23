@@ -22,8 +22,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#111',
     padding: 3,
     fontSize: 18,
-    marginBottom: 10,
-    marginTop: 10,
+    margin: 10,
     ':focus': {
       outline: 'none',
     }

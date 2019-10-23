@@ -18,8 +18,7 @@ const CustomSelection = ({items, onChange}) => {
 const styles = StyleSheet.create({
   selectionList: {
     fontSize: 18,
-    marginBottom: 10,
-    marginTop: 10,
+    margin: 10,
     backgroundColor: '#fff',
     ':focus': {
       outline: 'none',
