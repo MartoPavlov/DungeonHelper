@@ -6,6 +6,7 @@ import Section from '../components/Section';
 import StatCounter from '../components/StatCounter';
 import SpellCounter from '../components/SpellCounter';
 import {STATS, SPELL_SLOTS} from '../utility/constants';
+import ModalSection from '../components/ModalSection';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -45,6 +46,7 @@ export default class CreateCharacter extends Component {
 
     return (
       <div className="container">
+        <h1 style={{color: '#ec2127', marginBottom: 100}}>Create Character</h1>
         <InputField
           label="Name"
           value={this.state.name}
@@ -74,6 +76,9 @@ export default class CreateCharacter extends Component {
             return <SpellCounter label={label} />
           }}
         />
+        <ModalSection title="Abilities" label="Add">
+          
+        </ModalSection>
       </div>
     );
   }
