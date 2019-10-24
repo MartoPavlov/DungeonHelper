@@ -80,6 +80,9 @@ export default class CreateCharacter extends Component {
         <ModalSection title="Abilities" label="ADD">
           <AbilityAdder />
         </ModalSection>
+        <ModalSection title="Inventory" label="ADD">
+
+        </ModalSection>
       </div>
     );
   }

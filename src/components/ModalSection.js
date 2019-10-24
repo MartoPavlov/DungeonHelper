@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {css , StyleSheet} from 'aphrodite';
 import Modal from '@material-ui/core/Modal';
-import Button from './CustomButton';
+import CustomButton from './CustomButton';
 
 const ModalSection = ({title, label, children}) => {
   const [open, setOpen] = useState(false);
@@ -14,9 +14,16 @@ const ModalSection = ({title, label, children}) => {
         className={css(styles.modal)}
         onClose={() => {setOpen(false)}}
       >
-        <div className={css(styles.modalContent)}>{children}</div>
+        <div className={css(styles.modalContent)}>
+          {children}
+          <CustomButton onClick={() => setOpen(false)} fontSize={14}>
+            CLOSE
+          </CustomButton>
+        </div>
       </Modal>
-      <Button onClick={() => {setOpen(true)}} fontSize={18}>{label}</Button>
+      <CustomButton onClick={() => setOpen(true)} fontSize={18}>
+        {label}
+      </CustomButton>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {css, StyleSheet} from 'aphrodite';
 import CustomInput from './CustomInput'
 import CustomSmallInput from './CustomSmallInput';
 import CustomSelection from './CustomSelection';
@@ -43,6 +42,7 @@ class AbilityAdder extends Component {
 
   handleAddingAbility() {
     const {name, uses, cooldown} = this.state;
+    if (!name || uses <= 0) return;
     const tempAbility = {
       name: name,
       uses: uses,
@@ -93,9 +93,5 @@ const mapDispatchToProps = (dispatch) => {
     addAbility: (ability) => dispatch(addAbility(ability))
   };
 }
-
-const styles = StyleSheet.create({
-  
-});
 
 export default connect(null, mapDispatchToProps)(AbilityAdder);
