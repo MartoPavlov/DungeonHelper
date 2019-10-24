@@ -1,11 +1,11 @@
 import React from 'react';
 import {increment, decrement} from '../redux/index';
-import LabelCounter from './LabelCounter';
+import LabelReduxCounter from './LabelReduxCounter';
 
 const StatCounter = ({label}) => {
 
   return (
-    <LabelCounter
+    <LabelReduxCounter
       label={label}
       extractValue={extractValue}
       increment={increment}

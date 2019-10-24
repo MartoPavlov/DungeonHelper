@@ -1,11 +1,11 @@
 import React from 'react';
 import {incrementSpellSlot, decrementSpellSlot} from '../redux/index';
-import LabelCounter from '../components/LabelCounter';
+import LabelReduxCounter from './LabelReduxCounter';
 
 const SpellCounter = ({label}) => {
 
   return (
-    <LabelCounter
+    <LabelReduxCounter
       label={label}
       extractValue={extractValue}
       increment={incrementSpellSlot}

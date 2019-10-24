@@ -8,6 +8,7 @@ import SpellCounter from '../components/SpellCounter';
 import {STATS, SPELL_SLOTS} from '../utility/constants';
 import ModalSection from '../components/ModalSection';
 import AbilityAdder from '../components/AbilityAdder';
+import InventoryCreator from '../components/InventoryCreator';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -81,7 +82,7 @@ export default class CreateCharacter extends Component {
           <AbilityAdder />
         </ModalSection>
         <ModalSection title="Inventory" label="ADD">
-
+          <InventoryCreator />
         </ModalSection>
       </div>
     );

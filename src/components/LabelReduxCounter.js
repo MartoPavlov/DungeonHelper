@@ -1,17 +1,17 @@
 import React from 'react';
 import {StyleSheet, css} from 'aphrodite';
-import Counter from './Counter';
+import ReduxCounter from './ReduxCounter';
 
 const StatCounter = ({label, extractValue, increment, decrement,
-  min = 0, max = 1000000}) => {
+  min = 0, max = 999}) => {
   const dictionaryLabel = label.toLowerCase().replace(/(.+) /, '$1');
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.labelContainer)}>
-        <span className="label ">{label}</span>
+        <span className="label">{label}</span>
       </div>
-      <Counter
+      <ReduxCounter
         className={css(styles.counterContainer)}
         extractValue={extractValue}
         increment={increment}
