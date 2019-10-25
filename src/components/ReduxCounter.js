@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   counter: {
     display: 'inline-block',
-    width: '4%',
+    width: 25,
     fontSize: 18,
     border: '1px solid black',
     paddingLeft: 5,
