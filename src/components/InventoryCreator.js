@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import ItemInput from './ItemInput';
 import CustomButton from './CustomButton';
-import {addItem} from './redux/index';
+import {addItem} from '../redux/index';
+import CustomList from './CustomList';
+import CustomLabel from './CustomLabel';
  
 
 class InventoryCreator extends Component {
@@ -10,12 +13,31 @@ class InventoryCreator extends Component {
     this.state = {
       name: '',
       count: 0,
+      width: window.innerWidth,
+      height: window.innerHeight,
     };
 
     this.handleItemNameChange = this.handleItemNameChange.bind(this);
     this.handleIncrementCount = this.handleIncrementCount.bind(this);
     this.handleDecrementCount = this.handleDecrementCount.bind(this);
     this.handleCreateButtonClick = this.handleCreateButtonClick.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize(event) {
+    const target = event.target;
+    this.setState({
+      width: target.innerWidth,
+      height: target.innerHeight,
+    });
   }
 
   handleItemNameChange(text) {
@@ -53,7 +75,8 @@ class InventoryCreator extends Component {
   }
   
   render() {
-    const {name, count} = this.state;
+    const {name, count, width, height} = this.state;
+    const {inventory} = this.props
 
     return (
       <div>
@@ -67,19 +90,37 @@ class InventoryCreator extends Component {
           decrement={this.handleDecrementCount}
         />
         <div>
-          <CustomButton onClick={this.handleCreateButtonClick}>
-            Create
+          <CustomButton onClick={this.handleCreateButtonClick} fontSize={14}>
+            CREATE
           </CustomButton>
+          <CustomList
+            height={height * 2/5 + 20}
+            width={width * 7/10}
+            data={inventory} 
+            renderItem={(item) => {
+              return (
+                <CustomLabel width={'40%'} fontSize={18}>
+                  {item.name}({item.count})
+                </CustomLabel>
+              );
+            }}
+          />
         </div>
       </div>
     );
   }
 };
 
+const mapStateToProps = (state) => {
+  return {
+    inventory: state.inventory.inventory,
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    addItem: (ability) => dispatch(addItem(ability))
+    addItem: (item) => dispatch(addItem(item))
   };
 }
 
-export default connect(null, mapDispatchToProps)(InventoryCreator);
+export default connect(mapStateToProps, mapDispatchToProps)(InventoryCreator);

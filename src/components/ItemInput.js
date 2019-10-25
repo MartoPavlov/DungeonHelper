@@ -2,7 +2,6 @@ import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomInput from './CustomInput';
 import Counter from './Counter';
-import CustomButton from './CustomButton';
 
 const ItemInput = ({label, name, count, onChange, increment, decrement}) => {
 
@@ -18,11 +17,11 @@ const ItemInput = ({label, name, count, onChange, increment, decrement}) => {
 
 const styles = StyleSheet.create({
   container: {
+    textAlign: 'center',
     marginBottom: 4,
     marginTop: 4,
     display: 'inline-block',
     width: '45%',
-    textAlign: 'left',
   },
   counter: {
     display: 'inline-block',

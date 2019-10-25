@@ -1,7 +1,7 @@
 import React from 'react';
 import {FixedSizeList} from 'react-window';
 
-const CustomList = ({data, renderItem, height = 400, width = 200, itemSize= 42}) => {
+const CustomList = ({data, renderItem, height = 400, width = 200, itemSize = 42}) => {
 
 
   return (

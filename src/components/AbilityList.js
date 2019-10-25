@@ -40,7 +40,6 @@ const AbilityList = () => {
       <CustomList
         height={screen.height * 1/2 - 20}
         width={screen.width * 7/10}
-        itemSize={20}
         data={abilities}
         renderItem={(ability) => {
           return (

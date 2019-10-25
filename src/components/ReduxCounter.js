@@ -1,8 +1,6 @@
 import React from 'react';
 import {StyleSheet, css} from 'aphrodite';
 import {useSelector, useDispatch} from 'react-redux';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import Counter from './Counter';
 
 const ReduxCounter = ({extractValue, increment, decrement,
