@@ -4,13 +4,14 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import CustomButton from './CustomButton';
+import CustomHeading from './CustomHeading';
 
-const ModalSection = ({title, label, children, width='20%'}) => {
+const ModalSection = ({title, label, children, width='20%', className}) => {
   const [open, setOpen] = useState(false);
   
   return (
-    <div>
-      <div className="title">{title}</div>
+    <div className={css(styles.container, className)}>
+      <CustomHeading>{title}</CustomHeading>
       <Modal
         open={open}
         className={css(styles.modal)}
@@ -38,6 +39,9 @@ const ModalSection = ({title, label, children, width='20%'}) => {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    textAlign: 'center',
+  },
   modal: {
     justifyContent: 'center',
     alignItems: 'center',
