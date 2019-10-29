@@ -1,4 +1,5 @@
 import React from 'react';
+import CustomHeading from './CustomHeading';
 
 const Section = ({title, fields, builderItem}) => {
   const items = fields.map((item) => {
@@ -11,7 +12,7 @@ const Section = ({title, fields, builderItem}) => {
   
   return (
     <div>
-      <div className="title">{title}</div>
+      <CustomHeading>{title}</CustomHeading>
       {items}
     </div>
   );

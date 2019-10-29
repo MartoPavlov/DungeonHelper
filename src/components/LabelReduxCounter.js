@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, css} from 'aphrodite';
 import ReduxCounter from './ReduxCounter';
+import CustomTitle from './CustomTitle';
 
 const StatCounter = ({label, extractValue, increment, decrement,
   min = 0, max = 999}) => {
@@ -9,7 +10,7 @@ const StatCounter = ({label, extractValue, increment, decrement,
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.labelContainer)}>
-        <span className="label">{label}</span>
+        <CustomTitle>{label}</CustomTitle>
       </div>
       <ReduxCounter
         className={css(styles.counterContainer)}

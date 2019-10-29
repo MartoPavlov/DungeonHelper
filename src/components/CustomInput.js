@@ -1,11 +1,13 @@
 import React from 'react';
 import {StyleSheet , css} from 'aphrodite';
 
-const CustomInput = ({value, onChange}) => {
+const CustomInput = ({value, onChange, password, className}) => {
+  const type = password ? 'password' : 'text';
+
   return (
     <input
-      className={css(styles.inputField)}
-      type="text"
+      className={css(styles.inputField, className)}
+      type={type}
       value={value}
       onChange={(event) => onChange(event.target.value)}
     />

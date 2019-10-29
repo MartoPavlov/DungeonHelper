@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router } from 'react-router-dom'
 import './App.css';
 import CreateCharacter from './pages/CreateCharacter';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import store from './redux/store';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <div>
             <Route exact path="/" component={Login} />
             <Route path="/create" component={CreateCharacter} />
+            <Route path="/register" component={Register} />
           </div>
         </Router>
       </div>

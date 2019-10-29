@@ -12,6 +12,7 @@ import AbilityAdder from '../components/AbilityAdder';
 import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
 import {STATS, SPELL_SLOTS} from '../utility/constants';
+import Firebase from '../firebase/Firebase';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -25,6 +26,12 @@ export default class CreateCharacter extends Component {
     this.handleOnNameChanged = this.handleOnNameChanged.bind(this);
     this.handleOnLevelChanged = this.handleOnLevelChanged.bind(this);
     this.handleOnHPChange = this.handleOnHPChange.bind(this);
+  }
+
+  componentDidMount() {
+    if (!Firebase.auth().currentUser) {
+      this.props.history.push('/');
+    }
   }
 
   handleOnNameChanged(newName) {
@@ -51,7 +58,7 @@ export default class CreateCharacter extends Component {
 
     return (
       <div className="container">
-        <h1 style={{color: '#ec2127', marginBottom: 100}}>Create Character:</h1>
+        <h1 className={css(styles.heading)}>Create Character:</h1>
         <Grid 
           container
           justify="center"
@@ -74,7 +81,7 @@ export default class CreateCharacter extends Component {
               onChange={this.handleOnHPChange}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Section
               title="Stats"
               fields={STATS}
@@ -83,7 +90,7 @@ export default class CreateCharacter extends Component {
               }}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Section
               title="Spell Slots"
               fields={SPELL_SLOTS}
@@ -92,7 +99,7 @@ export default class CreateCharacter extends Component {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <ModalSection title="Abilities" label="ADD" width={'20%'}>
               <AbilityAdder />
             </ModalSection>
@@ -102,7 +109,7 @@ export default class CreateCharacter extends Component {
           </Grid>
         </Grid>
         <div className={css(styles.separator)}></div>
-        <CustomButton className={css(styles.createButton)}>
+        <CustomButton className={styles.createButton}>
           CREATE
         </CustomButton>
       </div>
@@ -111,12 +118,21 @@ export default class CreateCharacter extends Component {
 }
 
 const styles = StyleSheet.create({
+  heading: {
+    color: '#ec2127',
+    marginBottom: 100,
+    textAlign: 'center'
+  },
   separator: {
     marginLeft: '5%',
     width: '90%',
     border: '1px solid #aaa',
-    marginTop: 10,
+    marginTop: 100,
     marginBottom: 10,
+  },
+  createButton: {
+    display: 'block',
+    textAlign: 'center',
   }
 });
 
