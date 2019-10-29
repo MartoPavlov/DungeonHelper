@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {css, StyleSheet} from 'aphrodite';
+import {StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid'
 import CustomButton from '../components/CustomButton';
 import CustomTitle from '../components/CustomTitle';
@@ -110,6 +110,6 @@ const styles = StyleSheet.create({
   },
   error: {
    marginTop: 20,
-   fontStyle: 'bold', 
+   fontStyle: 'italic', 
   }
 });

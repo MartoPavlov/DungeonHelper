@@ -12,6 +12,7 @@ import AbilityAdder from '../components/AbilityAdder';
 import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
 import {STATS, SPELL_SLOTS} from '../utility/constants';
+import Firebase from '../firebase/Firebase';
 
 export default class CreateCharacter extends Component {
   constructor() {
@@ -25,6 +26,12 @@ export default class CreateCharacter extends Component {
     this.handleOnNameChanged = this.handleOnNameChanged.bind(this);
     this.handleOnLevelChanged = this.handleOnLevelChanged.bind(this);
     this.handleOnHPChange = this.handleOnHPChange.bind(this);
+  }
+
+  componentDidMount() {
+    if (!Firebase.auth().currentUser) {
+      this.props.history.push('/');
+    }
   }
 
   handleOnNameChanged(newName) {
