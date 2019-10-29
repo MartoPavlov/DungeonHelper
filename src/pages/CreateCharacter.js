@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Grid from '@material-ui/core/Grid';
 import {css, StyleSheet} from 'aphrodite';
+import {connect} from 'react-redux';
 import InputField from '../components/InputField';
 import SelectionList from '../components/SelectionList';
 import SmallInputField from '../components/SmallInputField';
@@ -11,21 +12,27 @@ import ModalSection from '../components/ModalSection';
 import AbilityAdder from '../components/AbilityAdder';
 import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
+import Text from '../components/Text';
 import {STATS, SPELL_SLOTS} from '../utility/constants';
 import Firebase from '../firebase/Firebase';
+import {
+  resetStats, resetSpellSlots, deleteAllAbilities, deleteInventory
+} from '../redux/index';
 
-export default class CreateCharacter extends Component {
+class CreateCharacter extends Component {
   constructor() {
     super();
     this.state = {
       name: '',
-      level: 0,
+      level: 1,
       hp: 0,
+      error: '',
     };
 
     this.handleOnNameChanged = this.handleOnNameChanged.bind(this);
     this.handleOnLevelChanged = this.handleOnLevelChanged.bind(this);
     this.handleOnHPChange = this.handleOnHPChange.bind(this);
+    this.handleOnCreateCharacterClick = this.handleOnCreateCharacterClick.bind(this);
   }
 
   componentDidMount() {
@@ -52,12 +59,50 @@ export default class CreateCharacter extends Component {
     });
   }
 
+  handleOnCreateCharacterClick() {
+    const {name, level, hp} = this.state;
+    const {stats, spells, abilities, inventory, user} = this.props;
+    const currentCharacter = {
+      name: name,
+      level: level,
+      hp: hp,
+      stats: stats,
+      spells: spells,
+      abilities: abilities,
+      inventory: inventory,
+    };
+
+    if (!this.characterIsValid) {
+      this.setState({
+        error: 'Invalid Character!',
+      });
+      return;
+    }
+    
+    Firebase.database().ref('/characterInfo/'+user.uid+'/'+name)
+      .push(currentCharacter).then(() => {
+        this.props.resetRedux();
+        this.props.history.push('/select');
+    }).catch((error) => {
+      this.setState({
+        error: error.massage,
+      });
+    });
+  }
+
+  characterIsValid() {
+    const {name, hp} = this.state;
+    const {abilities, inventory} = this.props;
+    
+    return name && hp > 0 && abilities.length > 0 && inventory > 0;
+  }
+
   render() {
     // creates an array with the numbers from 1 to 20
     const levels = Array.from({length: 20}, (v, number) => number + 1);
 
     return (
-      <div className="container">
+      <div>
         <h1 className={css(styles.heading)}>Create Character:</h1>
         <Grid 
           container
@@ -109,9 +154,13 @@ export default class CreateCharacter extends Component {
           </Grid>
         </Grid>
         <div className={css(styles.separator)}></div>
-        <CustomButton className={styles.createButton}>
-          CREATE
+        <CustomButton
+          onClick={this.handleOnCreateCharacterClick}
+          className={styles.createButton}
+        >
+          Create
         </CustomButton>
+        <Text className={styles.error}>{this.state.error}</Text>
       </div>
     );
   }
@@ -130,9 +179,34 @@ const styles = StyleSheet.create({
     marginTop: 100,
     marginBottom: 10,
   },
+  error: {
+    fontStyle: 'italic',
+  },
   createButton: {
     display: 'block',
     textAlign: 'center',
   }
 });
 
+const mapStateToProps = (state) => {
+  return {
+    stats: state.stats,
+    spells: state.spells,
+    abilities: state.abilities.abilities,
+    inventory: state.inventory.inventory,
+    user: state.user.user,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    resetRedux: () => {
+      dispatch(resetStats());
+      dispatch(resetSpellSlots());
+      dispatch(deleteAllAbilities());
+      dispatch(deleteInventory());
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateCharacter)

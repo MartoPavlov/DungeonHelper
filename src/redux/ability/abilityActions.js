@@ -1,4 +1,6 @@
-import {ABILITY_ADD, ABILITY_EDIT, ABILITY_USE} from './abilityActionTypes';
+import {
+  ABILITY_ADD, ABILITY_EDIT, ABILITY_USE, DELETE_ABILITIES
+} from './abilityActionTypes';
 
 export const addAbility = (ability) => {
   return {
@@ -25,4 +27,10 @@ export const useAbility = (name) => {
     type: ABILITY_USE,
     name: name,
   };
+}
+
+export const deleteAllAbilities = () => {
+  return {
+    type: DELETE_ABILITIES,
+  }
 }

@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {css, StyleSheet} from 'aphrodite';
 import CustomInput from './CustomInput'
 import CustomSmallInput from './CustomSmallInput';
 import CustomSelection from './CustomSelection';
 import CustomButton from './CustomButton';
+import CustomTitle from './CustomTitle';
+import CustomHeading from './CustomHeading';
 import AbilityList from './AbilityList';
 import {addAbility} from '../redux/index';
 
@@ -13,7 +16,7 @@ class AbilityAdder extends Component {
     this.state = {
       name: '',
       uses: 0,
-      cooldown: '',
+      cooldown: 'long rest',
     };
 
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -64,29 +67,37 @@ class AbilityAdder extends Component {
 
     return (
       <div>
-        <div className="title">Add Ability</div>
-        <span className="label">Enter Ability</span>
-        <CustomInput
-          value={name}
-          onChange={this.handleNameChange}
-        />
-        <CustomSmallInput
-          value={uses}
-          onChange={this.handleUsesChange}
-          width={30}
-        />
-        <CustomSelection
-          items={cooldowns}
-          onChange={this.handleCooldownChange}
-        />
-        <CustomButton onClick={this.handleAddingAbility} fontSize={14}>
-          ADD
-        </CustomButton>
+        <CustomHeading>Add Ability</CustomHeading>
+        <div className={css(styles.abilityInputContainer)}>
+          <CustomTitle>Enter Ability</CustomTitle>
+          <CustomInput
+            value={name}
+            onChange={this.handleNameChange}
+          />
+          <CustomSmallInput
+            value={uses}
+            onChange={this.handleUsesChange}
+            width={30}
+          />
+          <CustomSelection
+            items={cooldowns}
+            onChange={this.handleCooldownChange}
+          />
+          <CustomButton onClick={this.handleAddingAbility} fontSize={14}>
+            ADD
+          </CustomButton>
+        </div>
         <AbilityList />
       </div>
     );
   }
 };
+
+const styles = StyleSheet.create({
+  abilityInputContainer: {
+    textAlign: 'center',
+  },
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {

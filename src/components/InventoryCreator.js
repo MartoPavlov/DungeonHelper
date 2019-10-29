@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {StyleSheet} from 'aphrodite';
 import ItemInput from './ItemInput';
 import CustomButton from './CustomButton';
 import {addItem} from '../redux/index';
 import CustomList from './CustomList';
 import CustomLabel from './CustomLabel';
+import CustomHeading from './CustomHeading'
  
 
 class InventoryCreator extends Component {
@@ -80,7 +82,7 @@ class InventoryCreator extends Component {
 
     return (
       <div>
-        <div className="title">Create Inventory</div>
+        <CustomHeading>Create Inventory</CustomHeading>
         <ItemInput
           label="Item"
           name={name}
@@ -94,12 +96,13 @@ class InventoryCreator extends Component {
             CREATE
           </CustomButton>
           <CustomList
+            className={styles.list}
             height={height * 2/5 + 20}
             width={width * 7/10}
             data={inventory} 
             renderItem={(item) => {
               return (
-                <CustomLabel width={'40%'} fontSize={18}>
+                <CustomLabel className={styles.label}  width={'40%'} fontSize={18}>
                   {item.name}({item.count})
                 </CustomLabel>
               );
@@ -110,6 +113,17 @@ class InventoryCreator extends Component {
     );
   }
 };
+
+const styles = StyleSheet.create({
+  list: {
+    textAlign: 'center',
+    paddingTop: 20,
+  },
+  label: {
+    marginTop: 10,
+    marginBottom: 10,
+  }
+});
 
 const mapStateToProps = (state) => {
   return {

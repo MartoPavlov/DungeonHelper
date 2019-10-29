@@ -38,7 +38,7 @@ const AbilityList = () => {
         </div>
       </Modal>
       <CustomList
-        height={screen.height * 1/2 - 20}
+        height={screen.height * 4/9}
         width={screen.width * 7/10}
         data={abilities}
         renderItem={(ability) => {

@@ -1,4 +1,4 @@
-import { INCREMENT_STAT, DECREMENT_STAT } from './statActionTypes';
+import { INCREMENT_STAT, DECREMENT_STAT, RESET_STATS } from './statActionTypes';
 
 export const increment = (stat) => {
   return {
@@ -11,5 +11,11 @@ export const decrement = (stat) => {
   return {
     type: DECREMENT_STAT,
     stat: stat,
+  }
+}
+
+export const resetStats = () => {
+  return {
+    type: RESET_STATS,
   }
 }

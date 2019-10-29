@@ -1,7 +1,6 @@
 import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import {css, StyleSheet} from 'aphrodite';
-import If from './If';
 
 const CustomCheckbox = ({className, size, checked, onClick}) => {
   const animateCheck = {

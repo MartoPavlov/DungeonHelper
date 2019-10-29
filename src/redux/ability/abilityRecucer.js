@@ -1,4 +1,6 @@
-import {ABILITY_ADD, ABILITY_EDIT, ABILITY_USE} from './abilityActionTypes';
+import {
+  ABILITY_ADD, ABILITY_EDIT, ABILITY_USE, DELETE_ABILITIES
+} from './abilityActionTypes';
 
 const initialState = {
   abilities: [],
@@ -63,6 +65,8 @@ const abilityReducer = (state = initialState, action) => {
       return {
         abilities: useeAbility(state, action.name),
       };
+    case DELETE_ABILITIES:
+      return initialState;
     default:
       return state;
   }

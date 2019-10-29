@@ -1,6 +1,6 @@
 import {
   INCREMENT_SPELL_SLOT, DECREMENT_SPELL_SLOT, REGAIN_SPELL_SLOT,
-  USE_SPELL_SLOT
+  USE_SPELL_SLOT, RESET_SPELL_SLOTS
 } from './spellActionTypes';
 
 const initialState = {
@@ -37,6 +37,8 @@ const spellReducer = (state = initialState, action)  => {
       return {
         ...state, [action.slot]: {curr: currentValue, max: maxValue},
       }
+    case RESET_SPELL_SLOTS:
+      return initialState;
     default: 
       return state;
   }

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid'
 import CustomButton from '../components/CustomButton';
@@ -9,8 +10,9 @@ import Image from '../components/Image';
 import {Link} from 'react-router-dom';
 import Firebase from '../firebase/Firebase';
 import Text from '../components/Text';
+import {setUser} from '../redux/index';
 
-export default class Login extends Component {
+class Login extends Component {
   constructor() {
     super();
     this.state = {
@@ -31,7 +33,8 @@ export default class Login extends Component {
         email: '',
         password: '',
       }, () => {
-        this.props.history.push('/create');
+        this.props.setUser(Firebase.auth().currentUser);
+        this.props.history.push('/select');
       });
     }).catch((mess) => {
       this.setState({
@@ -113,3 +116,11 @@ const styles = StyleSheet.create({
    fontStyle: 'italic', 
   }
 });
+
+const mapPropsToDispatch = (dispatch) => {
+  return {
+    setUser: (user) => dispatch(setUser(user))
+  }
+}
+
+export default connect(null, mapPropsToDispatch)(Login)
