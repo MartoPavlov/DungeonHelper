@@ -4,7 +4,7 @@ import { css, StyleSheet } from 'aphrodite';
 const Image = ({src, className}) => {
   return (
     <div className={css(styles.container)}>
-      <img className={css(className)} src={src} />
+      <img className={css(className)} src={src} alt="" />
     </div>
   );
 };

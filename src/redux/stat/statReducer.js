@@ -1,4 +1,6 @@
-import {INCREMENT_STAT, DECREMENT_STAT} from './statActionTypes';
+import {
+  INCREMENT_STAT, DECREMENT_STAT, RESET_STATS, LOAD_STATS
+} from './statActionTypes';
 
 const initialState = {
   strength: 8,
@@ -20,8 +22,13 @@ const statReducer = (state = initialState, action) => {
     case DECREMENT_STAT:
       return {
         ...state, [action.stat]: currentValue - 1,
-      }
-    default: return state;
+      };
+    case RESET_STATS:
+      return initialState;
+    case LOAD_STATS:
+      return action.stats;
+    default:
+      return state;
   }
 }
 

@@ -1,3 +1,5 @@
 export const ABILITY_ADD = 'ABILITY_ADD';
 export const ABILITY_EDIT = 'ABILITY_EDIT';
 export const ABILITY_USE = 'ABILITY_USE';
+export const DELETE_ABILITIES = 'DELETE_ABILITIES';
+export const LOAD_ABILITIES = 'LOAD_ABILITIES';

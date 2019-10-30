@@ -1,0 +1,1 @@
+export const SET_BASIC_STATS = 'SET_BASIC_STATS';

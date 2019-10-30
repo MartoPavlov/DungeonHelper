@@ -1,2 +1,4 @@
 export const INCREMENT_STAT = 'INCREMENT_STAT';
 export const DECREMENT_STAT = 'DECREMENT_STAT';
+export const RESET_STATS = 'RESET_STATS';
+export const LOAD_STATS = 'LOAD_STATS';

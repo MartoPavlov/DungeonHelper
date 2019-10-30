@@ -1,5 +1,7 @@
-import {ADD_ITEM, USE_ITEM, GAIN_BRONZE, LOSE_BRONZE} 
-  from './inventoryActionTypes';
+import {
+  ADD_ITEM, USE_ITEM, GAIN_BRONZE, LOSE_BRONZE, DELETE_INVENTORY, 
+  LOAD_INVENTORY
+} from './inventoryActionTypes';
 
 const initialState = {
   inventory: [],
@@ -63,6 +65,10 @@ const inventoryReducer = (state = initialState, action) => {
         ...state,
         bronze: state.bronze - action.value,
       }
+    case DELETE_INVENTORY:
+      return initialState;
+    case LOAD_INVENTORY:
+      return action.inventory;
     default:
       return state;
   }
