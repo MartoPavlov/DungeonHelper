@@ -1,5 +1,6 @@
 import {
-  ABILITY_ADD, ABILITY_EDIT, ABILITY_USE, DELETE_ABILITIES
+  ABILITY_ADD, ABILITY_EDIT, ABILITY_USE, DELETE_ABILITIES,
+  LOAD_ABILITIES
 } from './abilityActionTypes';
 
 export const addAbility = (ability) => {
@@ -32,5 +33,12 @@ export const useAbility = (name) => {
 export const deleteAllAbilities = () => {
   return {
     type: DELETE_ABILITIES,
-  }
+  };
+}
+
+export const loadAbilities = (abilities) => {
+  return {
+    type: LOAD_ABILITIES,
+    abilities: abilities,
+  };
 }

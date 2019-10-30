@@ -1,5 +1,6 @@
 import {
-  ABILITY_ADD, ABILITY_EDIT, ABILITY_USE, DELETE_ABILITIES
+  ABILITY_ADD, ABILITY_EDIT, ABILITY_USE, DELETE_ABILITIES,
+  LOAD_ABILITIES
 } from './abilityActionTypes';
 
 const initialState = {
@@ -67,6 +68,8 @@ const abilityReducer = (state = initialState, action) => {
       };
     case DELETE_ABILITIES:
       return initialState;
+    case LOAD_ABILITIES:
+      return action.abilities;
     default:
       return state;
   }

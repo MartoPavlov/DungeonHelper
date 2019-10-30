@@ -62,7 +62,7 @@ export default class SelectCharacter extends Component {
   }
 
   handleSelectCharacter(event) {
-    console.log(event.target.innerHTML);
+    this.props.history.push('/character', {name: event.target.innerHTML});
   }
 
   render() {
