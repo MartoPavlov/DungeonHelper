@@ -3,3 +3,4 @@ export const USE_ITEM = 'USE_ITEM';
 export const GAIN_BRONZE = 'GAIN_BRONZE';
 export const LOSE_BRONZE = 'LOSE_BRONZE';
 export const DELETE_INVENTORY = 'DELETE_INVENTORY';
+export const LOAD_INVENTORY = 'LOAD_INVENTORY';

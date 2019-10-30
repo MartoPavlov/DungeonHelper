@@ -1,5 +1,6 @@
 import {
-  ADD_ITEM, USE_ITEM, GAIN_BRONZE, LOSE_BRONZE, DELETE_INVENTORY
+  ADD_ITEM, USE_ITEM, GAIN_BRONZE, LOSE_BRONZE, DELETE_INVENTORY, 
+  LOAD_INVENTORY
 } from './inventoryActionTypes';
 
 export const addItem = (item) => {
@@ -33,5 +34,12 @@ export const loseBronze = (value) => {
 export const deleteInventory = () => {
   return {
     type: DELETE_INVENTORY,
+  }
+}
+
+export const loadInventory = (inventory) => {
+  return {
+    type: LOAD_INVENTORY,
+    inventory: inventory,
   }
 }
