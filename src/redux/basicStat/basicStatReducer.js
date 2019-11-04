@@ -2,7 +2,7 @@ import {SET_BASIC_STATS} from './basicStatActionTypes';
 
 const initialState = {
   name: '',
-  hp: 0,
+  hp: {curr: 0, max: 0},
   level: 0,
 };
 

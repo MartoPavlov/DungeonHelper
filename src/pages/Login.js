@@ -24,6 +24,26 @@ class Login extends Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleEmailInput = this.handleEmailInput.bind(this);
     this.handlePasswordInput = this.handlePasswordInput.bind(this);
+    this.handleEnterButton = this.handleEnterButton.bind(this);
+
+    // Firebase.auth().onAuthStateChanged((user) => {
+    //   console.log(user);
+    //   this.props.setUser(user);
+    // });
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleEnterButton);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleEnterButton);
+  }
+
+  handleEnterButton(event) {
+    if (event.code === 'Enter') {
+      this.handleLogin();
+    }
   }
 
   handleLogin() {
@@ -41,7 +61,7 @@ class Login extends Component {
         error: mess.message,
         password: '',
       });
-    })
+    });
   }
 
   handleEmailInput(text) {
@@ -123,4 +143,4 @@ const mapPropsToDispatch = (dispatch) => {
   }
 }
 
-export default connect(null, mapPropsToDispatch)(Login)
+export default connect(null, mapPropsToDispatch)(Login);

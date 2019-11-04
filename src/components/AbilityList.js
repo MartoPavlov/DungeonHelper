@@ -43,10 +43,15 @@ const AbilityList = () => {
         data={abilities}
         renderItem={(ability) => {
           return (
-            <CustomButton fontSize={18} width={'50%'} onClick={() => {
-              setOpen(true);
-              setName(ability.name);
-            }}>
+            <CustomButton
+              className={styles.abilities}
+              fontSize={18}
+              width={'50%'}
+              onClick={() => {
+                setOpen(true);
+                setName(ability.name);
+              }}
+            >
               {ability.name}
             </CustomButton>
           );
@@ -69,6 +74,10 @@ const styles = StyleSheet.create({
     outline: 'none',
     padding: 5,
     borderRadius: 10,
+  },
+  abilities: {
+    marginTop: 10,
+    marginBottom: 10,
   }
 });
 

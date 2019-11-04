@@ -6,7 +6,8 @@ const CustomSmallInput = ({value, onChange, width}) => {
     smallInput: {
       fontSize: 18,
       width: width,
-      margin: 10,
+      marginLeft: 10,
+      marginRight: 10,
       ':focus': {
         outline: 'none',
       }

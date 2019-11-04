@@ -40,7 +40,9 @@ const spellReducer = (state = initialState, action)  => {
     case RESET_SPELL_SLOTS:
       return initialState;
     case LOAD_SPELL_SLOTS:
-      return action.spells;
+      return {
+        spells: action.spells
+    };
     default: 
       return state;
   }
