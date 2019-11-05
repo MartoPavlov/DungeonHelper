@@ -2,7 +2,9 @@ import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import {FixedSizeList} from 'react-window';
 
-const CustomList = ({className, data, renderItem, height = 400, width = 200, itemSize = 42}) => {
+const CustomList = ({className, data, renderItem, height = 0, width = 200, itemSize = 32}) => {
+  if (height === 0) height = data.length * itemSize;
+
   const styles = StyleSheet.create({
     container: {
       display: 'inline-block',

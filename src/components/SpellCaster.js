@@ -2,9 +2,9 @@ import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomTitle from './CustomTitle';
 import CustomButton from './CustomButton';
-import If from './If';
 
-const SpellCaster = ({className, label, onClick, fontSize = 20, contition=true}) => {
+const SpellCaster = ({className, label, onClick, fontSize = 20, contition=true,
+    passedArgument}) => {
   const styles = StyleSheet.create({
     spellCaster: {
       marginBottom: 7,
@@ -24,7 +24,7 @@ const SpellCaster = ({className, label, onClick, fontSize = 20, contition=true})
       <CustomButton
         className={styles.button}
         fontSize={fontSize-9}
-        onClick={() => onClick(level)}
+        onClick={() => onClick(passedArgument)}
         disabled={!contition}
       >
         Use
