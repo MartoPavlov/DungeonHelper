@@ -29,17 +29,12 @@ class SelectCharacter extends Component {
       this.props.history.push('/');
     }
     window.addEventListener('resize', this.handleResize);
-
-    const currentUser = Firebase.auth().currentUser
-      ? Firebase.auth().currentUser.uid
-      : '';
     
     Firebase.database().ref('/characterInfo/' + this.props.user).on('value', (data) => {
       const tempCharacters = this.state.characters;
       data.forEach((character) => {
         const val = character.val();
-        const snap = Object.values(val);
-        tempCharacters.push(snap[0].name);
+        tempCharacters.push(val.name);
       });
       this.setState({
         characters: tempCharacters,
@@ -68,8 +63,8 @@ class SelectCharacter extends Component {
   }
 
   renderLoadingScreen() {
-    const {width, height} = this.state;
-  return <LoadingScreen width={width} height={height*4/5} />
+    const {height} = this.state;
+    return <LoadingScreen height={height*4/5} />
   }
 
   render() {
@@ -87,6 +82,7 @@ class SelectCharacter extends Component {
             renderItem={(item) => {
               return (
                 <CustomButton
+                  className={styles.button}
                   fontSize={20}
                   width={'60%'}
                   onClick={this.handleSelectCharacter}
@@ -123,6 +119,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 60,
   },
+  button: {
+    marginTop: 20,
+    marginBottom: 20,
+  }
 });
 
 const mapStateToProps = (state) => {

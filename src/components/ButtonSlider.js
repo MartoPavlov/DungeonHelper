@@ -33,7 +33,7 @@ const ButtonSlider = ({className, value, onChange, onClick}) => {
     container: {
       display: 'inline-block',
       width: '50%',
-      marginLeft: 10,
+      marginLeft: 7,
     },
     button: {
       animationName: [animateButton],

@@ -83,8 +83,8 @@ class CreateCharacter extends Component {
       return;
     }
     
-    Firebase.database().ref('/characterInfo/'+user.uid+'/'+name)
-      .push(currentCharacter).then(() => {
+    Firebase.database().ref('/characterInfo/'+user+'/'+name)
+      .set(currentCharacter).then(() => {
         this.props.resetRedux();
         this.props.history.push('/select');
     }).catch((error) => {
