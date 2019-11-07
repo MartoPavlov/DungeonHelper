@@ -5,13 +5,16 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import CustomButton from './CustomButton';
 import CustomHeading from './CustomHeading';
+import If from './If';
 
 const ModalSection = ({title, label, children, width='20%', className}) => {
   const [open, setOpen] = useState(false);
   
   return (
     <div className={css(styles.container, className)}>
-      <CustomHeading>{title}</CustomHeading>
+      <If condition={title}>
+        <CustomHeading>{title}</CustomHeading>
+      </If>
       <Modal
         open={open}
         className={css(styles.modal)}

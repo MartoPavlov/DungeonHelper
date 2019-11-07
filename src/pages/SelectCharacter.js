@@ -1,17 +1,21 @@
 import React, {Component} from 'react';
 import {css, StyleSheet} from 'aphrodite';
+import {connect} from 'react-redux';
 import Firebase from '../firebase/Firebase';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import IconButton from '../components/IconButton';
 import CustomList from '../components/CustomList';
 import CustomButton from '../components/CustomButton';
+import If from '../components/If';
+import LoadingScreen from '../LoadingScreen';
 
-export default class SelectCharacter extends Component {
+class SelectCharacter extends Component {
   constructor() {
     super();
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
+      loaded: false,
       characters: [],
     };
 
@@ -21,27 +25,21 @@ export default class SelectCharacter extends Component {
   }
 
   componentDidMount() {
-    if (!Firebase.auth().currentUser) {
+    if (!this.props.user) {
       this.props.history.push('/');
+      return;
     }
     window.addEventListener('resize', this.handleResize);
-
-    const currentUser = Firebase.auth().currentUser
-      ? Firebase.auth().currentUser.uid
-      : '';
     
-    Firebase.database().ref('/characterInfo/'+currentUser).on('value', (data) => {
+    Firebase.database().ref('/characterInfo/' + this.props.user).on('value', (data) => {
       const tempCharacters = this.state.characters;
-
       data.forEach((character) => {
         const val = character.val();
-        const snap = Object.values(val);
-
-        tempCharacters.push(snap[0].name);
+        tempCharacters.push(val.name);
       });
-
       this.setState({
         characters: tempCharacters,
+        loaded: true,
       });
     })
   }
@@ -65,29 +63,37 @@ export default class SelectCharacter extends Component {
     this.props.history.push('/character', {name: event.target.innerHTML});
   }
 
+  renderLoadingScreen() {
+    const {height} = this.state;
+    return <LoadingScreen className={styles.loading} height={height*3/4} />
+  }
+
   render() {
-    const {characters, width, height} = this.state;
+    const {characters, width, height, loaded} = this.state;
 
     return (
       <div>
         <h1 className={css(styles.heading)}>Select Character: </h1>
-        <CustomList
-          className={styles.list}
-          data={characters}
-          width={width/2}
-          height={height*3/4}
-          renderItem={(item) => {
-            return (
-              <CustomButton
-                fontSize={20}
-                width={'60%'}
-                onClick={this.handleSelectCharacter}
-              >
-                {item}
-              </CustomButton>
-            );
-          }}
-        />
+        <If condition={loaded} els={this.renderLoadingScreen()}>
+          <CustomList
+            className={styles.list}
+            data={characters}
+            width={width/2}
+            height={height*3/4}
+            renderItem={(item) => {
+              return (
+                <CustomButton
+                  className={styles.button}
+                  fontSize={20}
+                  width={'60%'}
+                  onClick={this.handleSelectCharacter}
+                >
+                  {item}
+                </CustomButton>
+              );
+            }}
+          />
+        </If>
         <IconButton
           className={styles.addButton}
           onClick={this.handleAddCharacterClick}
@@ -110,7 +116,23 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   addButton: {
+    display: 'block',
     textAlign: 'center',
     fontSize: 60,
   },
+  button: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  loading: {
+    marginBottom: 34,
+  },
 });
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.user,
+  }
+}
+
+export default connect(mapStateToProps)(SelectCharacter);

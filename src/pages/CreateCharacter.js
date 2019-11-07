@@ -25,7 +25,7 @@ class CreateCharacter extends Component {
     this.state = {
       name: '',
       level: 1,
-      hp: 0,
+      hp: {curr: 0, max: 0},
       error: '',
     };
 
@@ -36,7 +36,7 @@ class CreateCharacter extends Component {
   }
 
   componentDidMount() {
-    if (!Firebase.auth().currentUser) {
+    if (!this.props.user) {
       this.props.history.push('/');
     }
   }
@@ -54,8 +54,11 @@ class CreateCharacter extends Component {
   }
 
   handleOnHPChange(newHP) {
+    const hp = this.state.hp;
+    hp.curr = newHP;
+    hp.max = newHP;
     this.setState({
-      hp: newHP,
+      hp: hp,
     });
   }
 
@@ -65,12 +68,13 @@ class CreateCharacter extends Component {
     const currentCharacter = {
       name: name,
       level: level,
-      hp: hp,
+      hp: {curr: hp.curr, max: hp.max},
       stats: stats,
       spells: spells,
       abilities: abilities,
       inventory: inventory,
     };
+    console.log(currentCharacter);
 
     if (!this.characterIsValid) {
       this.setState({
@@ -79,8 +83,8 @@ class CreateCharacter extends Component {
       return;
     }
     
-    Firebase.database().ref('/characterInfo/'+user.uid+'/'+name)
-      .push(currentCharacter).then(() => {
+    Firebase.database().ref('/characterInfo/'+user+'/'+name)
+      .set(currentCharacter).then(() => {
         this.props.resetRedux();
         this.props.history.push('/select');
     }).catch((error) => {
@@ -91,7 +95,8 @@ class CreateCharacter extends Component {
   }
 
   characterIsValid() {
-    const {name, hp} = this.state;
+    const {name} = this.state;
+    const hp = this.state.hp.max;
     const {abilities, inventory} = this.props;
     
     return name && hp > 0 && abilities.length > 0 && inventory > 0;
@@ -122,7 +127,7 @@ class CreateCharacter extends Component {
             />
             <SmallInputField
               label="HP"
-              value={this.state.hp}
+              value={this.state.hp.max}
               onChange={this.handleOnHPChange}
             />
           </Grid>

@@ -69,7 +69,9 @@ const abilityReducer = (state = initialState, action) => {
     case DELETE_ABILITIES:
       return initialState;
     case LOAD_ABILITIES:
-      return action.abilities;
+      return {
+        abilities: action.abilities,
+      };
     default:
       return state;
   }

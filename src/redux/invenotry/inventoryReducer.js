@@ -68,7 +68,9 @@ const inventoryReducer = (state = initialState, action) => {
     case DELETE_INVENTORY:
       return initialState;
     case LOAD_INVENTORY:
-      return action.inventory;
+      return {
+        inventory: action.inventory,
+      };
     default:
       return state;
   }

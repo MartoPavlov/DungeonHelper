@@ -3,9 +3,9 @@ import {css, StyleSheet} from 'aphrodite';
 
 const IconButton = ({className, onClick, children}) => {
   return (
-    <div className={css(styles.container, className)} onClick={onClick}>
+    <span className={css(styles.container, className)} onClick={onClick}>
       {children}
-    </div>
+    </span>
   );
 };
 
