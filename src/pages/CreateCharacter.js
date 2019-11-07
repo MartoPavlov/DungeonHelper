@@ -36,7 +36,7 @@ class CreateCharacter extends Component {
   }
 
   componentDidMount() {
-    if (!Firebase.auth().currentUser) {
+    if (!this.props.user) {
       this.props.history.push('/');
     }
   }

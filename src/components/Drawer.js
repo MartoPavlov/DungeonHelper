@@ -20,6 +20,9 @@ const Drawer = ({className, label, childHeight=40, children}) => {
     drawer: {
       textAlign: 'center',
     },
+    button: {
+      textAlign: 'inherit',
+    },
     content: {
       animationName: [slideDownAnimation],
       animationDuration: '1000ms',
@@ -45,6 +48,7 @@ const Drawer = ({className, label, childHeight=40, children}) => {
   return (
     <div className={css(styles.drawer, className)}>
       <CustomButton
+        className={styles.button}
         onClick={() => setShown(!shown)}
       >
         {label}

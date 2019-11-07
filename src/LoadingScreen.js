@@ -2,7 +2,7 @@ import React from 'react';
 import LoopIcon from '@material-ui/icons/Loop';
 import {css, StyleSheet} from 'aphrodite';
 
-const LoadingScreen = ({width = '100%', height = '100%'}) => {
+const LoadingScreen = ({className, width = '100%', height = '100%'}) => {
   const animateLoading = {
     '0%': {
       transform: 'rotate(0deg)',
@@ -32,7 +32,7 @@ const LoadingScreen = ({width = '100%', height = '100%'}) => {
   });
 
   return (
-    <div className={css(styles.loadingScreen)}>
+    <div className={css(styles.loadingScreen, className)}>
       <span className={css(styles.icon)}>
         <LoopIcon color='error' fontSize='inherit' />
       </span>

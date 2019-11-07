@@ -25,11 +25,6 @@ class Login extends Component {
     this.handleEmailInput = this.handleEmailInput.bind(this);
     this.handlePasswordInput = this.handlePasswordInput.bind(this);
     this.handleEnterButton = this.handleEnterButton.bind(this);
-
-    // Firebase.auth().onAuthStateChanged((user) => {
-    //   console.log(user);
-    //   this.props.setUser(user);
-    // });
   }
 
   componentDidMount() {

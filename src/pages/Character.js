@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {StyleSheet} from 'aphrodite';
+import {css, StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid';
 import {
   setBasicStats, loadStats, loadSpellSlots, loadAbilities, loadInventory
@@ -43,9 +43,18 @@ class Character extends Component {
   }
 
   componentDidMount() {
-
+    if (!this.props.user) {
+      this.props.history.push('/');
+      return;
+    }
     const user = this.props.user;
-    const charName = this.props.location.state.name;
+    let charName;
+    try {
+      charName = this.props.location.state.name;
+    } catch(error) {
+      this.props.history.push('/select');
+      return;
+    }
 
     Firebase.database().ref('characterInfo/'+user+'/'+charName).on('value', (data) => {
       const val = data.val();
@@ -145,7 +154,7 @@ class Character extends Component {
       if (inventory[i].name === name) {
         inventory[i].count--;
         if (inventory[i].count === 0) {
-          inventory.filter((item) => item.name === name);
+          inventory.filter((item) => item.count > 0);
         }
         break;
       }
@@ -240,7 +249,11 @@ class Character extends Component {
   }
 
   render() {
-    const name = this.props.location.state.name
+    let name;
+    try {
+      name = this.props.location.state.name;
+    } catch(error) { return <div></div>; }
+    
     const {hp, level, stats, spells, abilities} = this.state.character;
     const {input} = this.state;
     
@@ -248,99 +261,110 @@ class Character extends Component {
       <div>
         <CustomHeading className={styles.name}>{name}</CustomHeading>
         <If condition={this.state.loaded} els={this.renderLoadingScreen()}>
-          <Grid container>
-            <Grid item xs={6}>
+          <Grid container justify='center' alignItems='flex-start'>
+            <Grid className={css(styles.grid)} item xs={6}>
               <LabeledStat className={styles.stat} label='HP' value={hp.curr}/>
             </Grid>
-            <Grid item xs={6}>
+            <Grid className={css(styles.grid)} item xs={6}>
               <ButtonSlider
                 value={input}
                 onChange={this.handleInputChange}
                 onClick={this.changeHp}
               />
-            </Grid>            
-          </Grid>
-          <CustomTitle className={styles.level}>
-            Level: {level}
-          </CustomTitle>
-          <CustomList
-            className={styles.list}
-            data={STATS}
-            width={'100%'}
-            height={180}
-            itemSize={30}
-            renderItem={(item) => {
-              return (
-                <CustomTitle className={styles.label}>
-                  {item} - {stats[item.toLowerCase()]}
-                </CustomTitle>
-              );
-            }}
-          />
-          <CustomList
-            className={styles.list}
-            data={SPELL_SLOTS}
-            width={'100%'}
-            renderItem={(item) => {
-              const spellLevelCurrentSlots = 
-                  spells[item.toLowerCase().replace(' ', '')].curr;
-              const label = item + ' - ' + spellLevelCurrentSlots;
-            
-              return (
-                <SpellCaster
-                  className={styles.label}
-                  label={label}
-                  onClick={this.castSpell}
-                  passedArgument={item.toLowerCase().replace('slot ', '')}
-                  contition={spellLevelCurrentSlots > 0}
-                />
-              );
-            }}
-          />
-          <CustomList
-            className={styles.list}
-            data={abilities}
-            width={'100%'}
-            renderItem={(item) => {
-              const name = item.name;
-              const currentUses = item.uses;
-              const label = 
-                  name + ' (' + currentUses + '/' + item.maxUses + ')';
-            
-              return (
-                <SpellCaster
-                  className={styles.label}
-                  label={label}
-                  onClick={this.useAbility}
-                  passedArgument={name}
-                  contition={currentUses > 0}
-                />
-              );
-            }}
-          />
-          <ModalSection
-            label='Inventory'
-          >
-              <InventoryManager
-                className={styles.label}
-                onClick={this.useItem}
+            </Grid>
+            <Grid className={css(styles.grid)} item xs={3}>
+              <CustomTitle className={styles.level}>
+                Level: {level}
+              </CustomTitle>
+              <CustomList
+                data={STATS}
+                width={'100%'}
+                height={180}
+                itemSize={30}
+                renderItem={(item) => {
+                  return (
+                    <CustomTitle className={styles.label}>
+                      {item} - {stats[item.toLowerCase()]}
+                    </CustomTitle>
+                  );
+                }}
               />
-          </ModalSection>
-          <Drawer className={styles.drawer} label='Short Rest'>
-            <SmallInputField
-              label='Add HP'
-              value={input}
-              onChange={this.handleInputChange}
-            />
-            <CustomButton
-              className={styles.shortRestButton}
-              onClick={this.handleShortRest}
-              width='100%'
-            >
-              Confirm
-            </CustomButton>
-          </Drawer>
-          <CustomButton onClick={this.handleLongRest}>Long Rest</CustomButton>
+            </Grid>
+            <Grid className={css(styles.grid)} item xs={3}>
+              <CustomList
+                data={SPELL_SLOTS}
+                width={'100%'}
+                renderItem={(item) => {
+                  const spellLevelCurrentSlots = 
+                      spells[item.toLowerCase().replace(' ', '')].curr;
+                  const label = item + ' - ' + spellLevelCurrentSlots;
+                
+                  return (
+                    <SpellCaster
+                      className={styles.label}
+                      label={label}
+                      onClick={this.castSpell}
+                      passedArgument={item.toLowerCase().replace('slot ', '')}
+                      contition={spellLevelCurrentSlots > 0}
+                    />
+                  );
+                }}
+              />
+            </Grid>
+            <Grid className={css(styles.grid)} item xs={12}>
+              <CustomList
+                data={abilities}
+                width={'100%'}
+                renderItem={(item) => {
+                  const name = item.name;
+                  const currentUses = item.uses;
+                  const label = 
+                      name + ' (' + currentUses + '/' + item.maxUses + ')';
+                
+                  return (
+                    <SpellCaster
+                      className={styles.label}
+                      label={label}
+                      onClick={this.useAbility}
+                      passedArgument={name}
+                      contition={currentUses > 0}
+                    />
+                  );
+                }}
+              />
+            </Grid>
+            <Grid className={css(styles.grid)} item xs={12}>
+              <ModalSection
+                label='Inventory'
+              >
+                <InventoryManager
+                  className={styles.label}
+                  onClick={this.useItem}
+                />
+              </ModalSection>
+            </Grid>
+            <Grid className={css(styles.grid)} item xs={12}>
+              <Drawer className={styles.drawer} label='Short Rest'>
+                <SmallInputField
+                  label='Add HP'
+                  value={input}
+                  onChange={this.handleInputChange}
+                />
+                <CustomButton
+                  className={styles.shortRestButton}
+                  onClick={this.handleShortRest}
+                  width='100%'
+                >
+                  Confirm
+                </CustomButton>
+              </Drawer>
+              <CustomButton
+                onClick={this.handleLongRest}
+              >
+                Long Rest
+              </CustomButton>
+            </Grid>
+          </Grid>
         </If>
       </div>
     );
@@ -359,18 +383,16 @@ const styles = StyleSheet.create({
     display: 'block',
     textAlign: 'center',
     marginBottom: 6,
-    marginTop: 15,
   },
   label: {
     display: 'block',
     textAlign: 'center',
     marginBottom: 6,
   },
-  list: {
-    marginBottom: 15,
+  grid: {
+    marginBottom: 40,
   },
   drawer: {
-    marginTop: 10,
     marginBottom: 10,
   },
   shortRestButton: {

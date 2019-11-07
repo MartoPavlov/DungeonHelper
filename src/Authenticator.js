@@ -10,6 +10,7 @@ import {setUser} from './redux/index';
 import Firebase from './firebase/Firebase';
 import If from './components/If';
 import LoadingScreen from './LoadingScreen';
+import NavigationBar from './components/NavigationBar';
 
 class Authenticator extends Component {
   constructor() {
@@ -33,7 +34,11 @@ class Authenticator extends Component {
   render() {
     return (
       <Router>
-        <If condition={this.state.done} els={this.renderLoadingScreen()}>
+        <NavigationBar />
+        <If
+          condition={this.state.done}
+          els={this.renderLoadingScreen()}
+        >
           <Route exact path="/" component={Login} />
           <Route path="/create" component={CreateCharacter} />
           <Route path="/register" component={Register} />
@@ -47,10 +52,16 @@ class Authenticator extends Component {
   }
 }
 
-const mapDispatchToState = (dispatch) => {
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.user,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => dispatch(setUser(user))
   };
 }
 
-export default connect(null, mapDispatchToState)(Authenticator)
+export default connect(mapStateToProps, mapDispatchToProps)(Authenticator);

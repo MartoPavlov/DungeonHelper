@@ -27,6 +27,7 @@ class SelectCharacter extends Component {
   componentDidMount() {
     if (!this.props.user) {
       this.props.history.push('/');
+      return;
     }
     window.addEventListener('resize', this.handleResize);
     
@@ -64,7 +65,7 @@ class SelectCharacter extends Component {
 
   renderLoadingScreen() {
     const {height} = this.state;
-    return <LoadingScreen height={height*4/5} />
+    return <LoadingScreen className={styles.loading} height={height*3/4} />
   }
 
   render() {
@@ -122,7 +123,10 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     marginBottom: 20,
-  }
+  },
+  loading: {
+    marginBottom: 34,
+  },
 });
 
 const mapStateToProps = (state) => {
