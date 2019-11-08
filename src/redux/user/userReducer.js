@@ -8,7 +8,7 @@ const userReducer = (state = initialState, action) => {
   switch(action.type) {
     case SET_USER:
       const user = action.user;
-      return user ? {user: user.uid} : {user: null};
+      return user ? {user: user} : {user: null};
     default: 
       return state;
   }

@@ -31,7 +31,7 @@ class SelectCharacter extends Component {
     }
     window.addEventListener('resize', this.handleResize);
     
-    Firebase.database().ref('/characterInfo/' + this.props.user).on('value', (data) => {
+    Firebase.database().ref('/characterInfo/' + this.props.user.uid).on('value', (data) => {
       const tempCharacters = this.state.characters;
       data.forEach((character) => {
         const val = character.val();
@@ -65,7 +65,7 @@ class SelectCharacter extends Component {
 
   renderLoadingScreen() {
     const {height} = this.state;
-    return <LoadingScreen className={styles.loading} height={height*3/4} />
+    return <LoadingScreen className={styles.loading} height={height*2/3} />
   }
 
   render() {
@@ -79,7 +79,7 @@ class SelectCharacter extends Component {
             className={styles.list}
             data={characters}
             width={width/2}
-            height={height*3/4}
+            height={height*2/3}
             renderItem={(item) => {
               return (
                 <CustomButton

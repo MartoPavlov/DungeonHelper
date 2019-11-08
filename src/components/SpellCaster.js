@@ -16,7 +16,6 @@ const SpellCaster = ({className, label, onClick, fontSize = 20, contition=true,
       display: 'inline-block',
     }
   });
-  const level = label.split(" ")[1];
 
   return (
     <div className={css(styles.spellCaster, className)}>

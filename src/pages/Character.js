@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {css, StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid';
+import {withSnackbar} from 'notistack';
 import {
   setBasicStats, loadStats, loadSpellSlots, loadAbilities, loadInventory
 } from '../redux/index';
@@ -56,7 +57,7 @@ class Character extends Component {
       return;
     }
 
-    Firebase.database().ref('characterInfo/'+user+'/'+charName).on('value', (data) => {
+    Firebase.database().ref('characterInfo/'+user.uid+'/'+charName).on('value', (data) => {
       const val = data.val();
       
       if (!val) return;
@@ -172,11 +173,10 @@ class Character extends Component {
     const user = this.props.user;
     const charName = this.state.character.name;
 
-    Firebase.database().ref('characterInfo/'+user+'/'+charName)
+    Firebase.database().ref('characterInfo/'+user.uid+'/'+charName)
     .update(this.state.character).then(() => {
-      console.log('Done')
     }).catch((error) => {
-      console.error(error.massage);
+      this.props.enqueueSnackbar(error.message, {variant: 'error'})
     });
   }
 
@@ -422,4 +422,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Character);
+export default
+  withSnackbar(connect(mapStateToProps, mapDispatchToProps)(Character));

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {StyleSheet} from 'aphrodite';
-import Grid from '@material-ui/core/Grid'
+import Grid from '@material-ui/core/Grid';
+import {withSnackbar} from 'notistack';
 import CustomButton from '../components/CustomButton';
 import CustomTitle from '../components/CustomTitle';
 import CustomInput from '../components/CustomInput';
@@ -18,16 +19,22 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      error: '',
     };
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleEmailInput = this.handleEmailInput.bind(this);
     this.handlePasswordInput = this.handlePasswordInput.bind(this);
     this.handleEnterButton = this.handleEnterButton.bind(this);
+    this.handleErrorReset = this.handleErrorReset.bind(this);
+    this.fireAnError = this.fireAnError.bind(this);
   }
 
   componentDidMount() {
+    if (Firebase.auth().currentUser) {
+      console.log('Here');
+      this.props.setUser(Firebase.auth().currentUser);
+      this.props.history.push('/select');
+    }
     window.addEventListener('keydown', this.handleEnterButton);
   }
 
@@ -43,6 +50,17 @@ class Login extends Component {
 
   handleLogin() {
     const {email, password} = this.state;
+
+    if (!email || !password) {
+      if (!email) {
+        this.fireAnError('The email field is empty');
+      }
+      if (!password) {
+        this.fireAnError('The password field is empty');
+      }
+      return;
+    }
+
     Firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
       this.setState({
         email: '',
@@ -52,10 +70,7 @@ class Login extends Component {
         this.props.history.push('/select');
       });
     }).catch((mess) => {
-      this.setState({
-        error: mess.message,
-        password: '',
-      });
+      this.fireAnError(mess.message);
     });
   }
 
@@ -71,13 +86,25 @@ class Login extends Component {
     });
   }
 
+  handleErrorReset() {
+    this.setState({
+      error: '',
+    });
+  }
+
+  fireAnError(error) {
+    this.setState({
+      password: '',
+    }, () => this.props.enqueueSnackbar(error, {variant: 'error'}));
+  }
+
   render() {
-    const {email, password, error} = this.state;
+    const {email, password} = this.state;
 
     return (
       <div>
         <Image className={styles.image} src={dandd}/>
-        <Grid container spacing={2}>
+        <Grid container justify='flex-end'>
           <Grid item xs={5}>
             <CustomTitle className={styles.label}>E-mail</CustomTitle>
           </Grid>
@@ -99,15 +126,16 @@ class Login extends Component {
           </Grid>
         </Grid>
         <Text className={styles.text}>
-          Not registered yet?&nbsp;
-          <Link to="/register">Register</Link>
-        </Text>
-        <CustomButton onClick={this.handleLogin}>
-          Login
-        </CustomButton>
-        <Text className={styles.error}>
-          {error}
-        </Text>
+            Not registered yet?&nbsp;
+            <Link to="/register">Register</Link>
+          </Text>
+          <CustomButton
+            className={styles.button}
+            onClick={this.handleLogin}
+            width={200}
+          > 
+            Login
+          </CustomButton>
       </div>
     );
   }
@@ -115,21 +143,17 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   label: {
-    paddingTop: 13,
     display: 'block',
     textAlign: 'end',
+    padding: 20.
   },
   image: {
-    width: '30%',
+    width: 400,
   },
   text: {
     marginTop: 10,
     marginBottom: 10,
   },
-  error: {
-   marginTop: 20,
-   fontStyle: 'italic', 
-  }
 });
 
 const mapPropsToDispatch = (dispatch) => {
@@ -138,4 +162,4 @@ const mapPropsToDispatch = (dispatch) => {
   }
 }
 
-export default connect(null, mapPropsToDispatch)(Login);
+export default withSnackbar(connect(null, mapPropsToDispatch)(Login));

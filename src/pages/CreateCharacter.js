@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Grid from '@material-ui/core/Grid';
 import {css, StyleSheet} from 'aphrodite';
 import {connect} from 'react-redux';
+import { withSnackbar } from 'notistack';
 import InputField from '../components/InputField';
 import SelectionList from '../components/SelectionList';
 import SmallInputField from '../components/SmallInputField';
@@ -74,32 +75,47 @@ class CreateCharacter extends Component {
       abilities: abilities,
       inventory: inventory,
     };
-    console.log(currentCharacter);
 
-    if (!this.characterIsValid) {
-      this.setState({
-        error: 'Invalid Character!',
-      });
+    if (this.characterIsInValid()) {
+      console.log('Here');
+      this.fireAnError('Invalid character');
       return;
     }
     
-    Firebase.database().ref('/characterInfo/'+user+'/'+name)
+    Firebase.database().ref('/characterInfo/'+user.uid+'/'+name)
       .set(currentCharacter).then(() => {
         this.props.resetRedux();
         this.props.history.push('/select');
+        this.props.enqueueSnackbar('Character created succesfuly!',
+         {variant: 'success'});
     }).catch((error) => {
-      this.setState({
-        error: error.massage,
-      });
+      this.fireAnError(error.message);
     });
   }
 
-  characterIsValid() {
+  characterIsInValid() {
     const {name} = this.state;
     const hp = this.state.hp.max;
     const {abilities, inventory} = this.props;
+
+    if (!name) {
+      this.fireAnError('The name field is emptry!');
+    }
+    if (hp.max <= 0) {
+      this.fireAnError('The HP must a possitive number');
+    }
+    if (abilities.length === 0) {
+      this.fireAnError('The character must have at least one ability');
+    }
+    if (inventory.length === 0) {
+      this.fireAnError('The character must have at least one item');
+    }
     
-    return name && hp > 0 && abilities.length > 0 && inventory > 0;
+    return !name || hp.max <= 0 || abilities.length === 0 || inventory.length === 0;
+  }
+
+  fireAnError(error) {
+    this.props.enqueueSnackbar(error, {variant: 'error'});
   }
 
   render() {
@@ -131,8 +147,9 @@ class CreateCharacter extends Component {
               onChange={this.handleOnHPChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Section
+              className={styles.stats}
               title="Stats"
               fields={STATS}
               builderItem={(label) => {
@@ -140,8 +157,9 @@ class CreateCharacter extends Component {
               }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Section
+              className={styles.spells}
               title="Spell Slots"
               fields={SPELL_SLOTS}
               builderItem={(label) => {
@@ -149,19 +167,36 @@ class CreateCharacter extends Component {
               }}
             />
           </Grid>
-          <Grid item xs={8}>
-            <ModalSection title="Abilities" label="ADD" width={'20%'}>
-              <AbilityAdder />
-            </ModalSection>
-            <ModalSection title="Inventory" label="ADD" width={'20%'}>
-              <InventoryCreator />
-            </ModalSection>
+          <Grid item xs={12}>
+            <Grid container alignItems='flex-start' justify='center'>
+              <Grid item xs={3}>
+                <ModalSection
+                  className={styles.modalSection}
+                  title="Abilities"
+                  label="ADD"
+                  width={200}
+                >
+                  <AbilityAdder />
+                </ModalSection>
+              </Grid>
+              <Grid item xs={3}>
+                <ModalSection
+                  className={styles.modalSection}
+                  title="Inventory"
+                  label="ADD"
+                  width={200}
+                >
+                  <InventoryCreator />
+                </ModalSection>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
         <div className={css(styles.separator)}></div>
         <CustomButton
           onClick={this.handleOnCreateCharacterClick}
           className={styles.createButton}
+          width={'25%'}
         >
           Create
         </CustomButton>
@@ -178,10 +213,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   separator: {
-    marginLeft: '5%',
-    width: '90%',
-    border: '1px solid #aaa',
-    marginTop: 100,
+    marginTop: 30,
     marginBottom: 10,
   },
   error: {
@@ -190,6 +222,16 @@ const styles = StyleSheet.create({
   createButton: {
     display: 'block',
     textAlign: 'center',
+  },
+  stats: {
+    textAlign: 'right'
+  },
+  spells: {
+    textAlign: 'left',
+  },
+  modalSection: {
+    marginTop: 40,
+    marginBottom: 40,
   }
 });
 
@@ -214,4 +256,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateCharacter)
+export default withSnackbar
+  (connect(mapStateToProps, mapDispatchToProps)(CreateCharacter));
