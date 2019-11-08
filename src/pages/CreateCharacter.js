@@ -20,6 +20,9 @@ import {
   resetStats, resetSpellSlots, deleteAllAbilities, deleteInventory
 } from '../redux/index';
 
+/**
+ * Page responsible for creating new characters in the users' account
+ */
 class CreateCharacter extends Component {
   constructor() {
     super();
@@ -256,5 +259,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default withSnackbar
-  (connect(mapStateToProps, mapDispatchToProps)(CreateCharacter));
+export default 
+  withSnackbar(connect(mapStateToProps, mapDispatchToProps)(CreateCharacter));

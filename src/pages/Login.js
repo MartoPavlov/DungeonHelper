@@ -13,6 +13,9 @@ import Firebase from '../firebase/Firebase';
 import Text from '../components/Text';
 import {setUser} from '../redux/index';
 
+/**
+ * The login page of the application
+ */
 class Login extends Component {
   constructor() {
     super();
@@ -24,30 +27,34 @@ class Login extends Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleEmailInput = this.handleEmailInput.bind(this);
     this.handlePasswordInput = this.handlePasswordInput.bind(this);
-    this.handleEnterButton = this.handleEnterButton.bind(this);
-    this.handleErrorReset = this.handleErrorReset.bind(this);
+    this.handleEnterKeyboardButton = this.handleEnterKeyboardButton.bind(this);
     this.fireAnError = this.fireAnError.bind(this);
   }
 
   componentDidMount() {
-    if (Firebase.auth().currentUser) {
-      console.log('Here');
-      this.props.setUser(Firebase.auth().currentUser);
+    const user = Firebase.auth().currentUser;
+    
+    if (user) {
+      this.props.setUser(user);
       this.props.history.push('/select');
     }
-    window.addEventListener('keydown', this.handleEnterButton);
+    window.addEventListener('keydown', this.handleEnterKeyboardButton);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleEnterButton);
+    window.removeEventListener('keydown', this.handleEnterKeyboardButton);
   }
 
-  handleEnterButton(event) {
+  handleEnterKeyboardButton(event) {
     if (event.code === 'Enter') {
       this.handleLogin();
     }
   }
 
+  /**
+   * Executed when you click the 'Login' button
+   * Fires snackbar errors on invalid credentials
+   */
   handleLogin() {
     const {email, password} = this.state;
 
@@ -66,8 +73,8 @@ class Login extends Component {
         email: '',
         password: '',
       }, () => {
-        this.props.setUser(Firebase.auth().currentUser);
-        this.props.history.push('/select');
+        this.setUserInRedux(Firebase.auth().currentUser)
+        this.navigateToSelectPage();
       });
     }).catch((mess) => {
       this.fireAnError(mess.message);
@@ -86,12 +93,18 @@ class Login extends Component {
     });
   }
 
-  handleErrorReset() {
-    this.setState({
-      error: '',
-    });
+  navigateToSelectPage() {
+    this.props.history.push('/select');
   }
 
+  setUserInRedux(user) {
+    this.props.setUser(user);
+  }
+
+  /**
+   * Creates a snackbar with a message the given parameter
+   * @param {String} error 
+   */
   fireAnError(error) {
     this.setState({
       password: '',
@@ -102,7 +115,7 @@ class Login extends Component {
     const {email, password} = this.state;
 
     return (
-      <div>
+      <form>
         <Image className={styles.image} src={dandd}/>
         <Grid container justify='flex-end'>
           <Grid item xs={5}>
@@ -136,7 +149,7 @@ class Login extends Component {
           > 
             Login
           </CustomButton>
-      </div>
+      </form>
     );
   }
 }

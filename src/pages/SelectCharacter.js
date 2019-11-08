@@ -9,6 +9,9 @@ import CustomButton from '../components/CustomButton';
 import If from '../components/If';
 import LoadingScreen from '../LoadingScreen';
 
+/**
+ * Page that handles character selection
+ */
 class SelectCharacter extends Component {
   constructor() {
     super();
@@ -22,26 +25,18 @@ class SelectCharacter extends Component {
     this.handleAddCharacterClick = this.handleAddCharacterClick.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleSelectCharacter = this.handleSelectCharacter.bind(this);
+    this.collectCharactersFromDatabase = 
+      this.collectCharactersFromDatabase.bind(this);
   }
 
   componentDidMount() {
-    if (!this.props.user) {
-      this.props.history.push('/');
-      return;
+    if (this.userNotAuthenticated()) {
+      this.forceAuthentication();
+    } else {
+      window.addEventListener('resize', this.handleResize);
+      
+      this.collectCharactersFromDatabase();
     }
-    window.addEventListener('resize', this.handleResize);
-    
-    Firebase.database().ref('/characterInfo/' + this.props.user.uid).on('value', (data) => {
-      const tempCharacters = this.state.characters;
-      data.forEach((character) => {
-        const val = character.val();
-        tempCharacters.push(val.name);
-      });
-      this.setState({
-        characters: tempCharacters,
-        loaded: true,
-      });
-    })
   }
 
   componentWillUnmount() {
@@ -65,7 +60,34 @@ class SelectCharacter extends Component {
 
   renderLoadingScreen() {
     const {height} = this.state;
+    
+   /**
+    * Note that the loading screen height must be the same as the 
+    * character list's
+    */
     return <LoadingScreen className={styles.loading} height={height*2/3} />
+  }
+
+  userNotAuthenticated() {
+    return !this.props.user;
+  }
+
+  forceAuthentication() {
+    this.props.history.push('/');
+  }
+
+  collectCharactersFromDatabase() {
+    Firebase.database().ref('/characterInfo/' + this.props.user.uid).on('value', (data) => {
+      const tempCharacters = this.state.characters;
+      data.forEach((character) => {
+        const val = character.val();
+        tempCharacters.push(val.name);
+      });
+      this.setState({
+        characters: tempCharacters,
+        loaded: true,
+      });
+    });
   }
 
   render() {

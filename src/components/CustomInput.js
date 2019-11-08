@@ -3,6 +3,7 @@ import {StyleSheet , css} from 'aphrodite';
 
 const CustomInput = ({value, onChange, password, className}) => {
   const type = password ? 'password' : 'text';
+  const autoComplete = password ? 'current-password' : '';
 
   return (
     <input
@@ -10,6 +11,7 @@ const CustomInput = ({value, onChange, password, className}) => {
       type={type}
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      autoComplete={autoComplete}
     />
   );
 };
