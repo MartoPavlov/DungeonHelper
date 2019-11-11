@@ -1,14 +1,19 @@
 import React from 'react';
 import {StyleSheet , css} from 'aphrodite';
+import PropTypes from 'prop-types';
 
-const CustomSelection = ({items, onChange}) => {
+/**
+ * Component that renders a selection of items
+ * @param {Object} props
+ */
+const CustomSelection = ({className, items, onChange}) => {
   const options = items.map((item) => {
     return <option key={item} value={item}>{item}</option>
   });
 
   return (
     <select
-        className={css(styles.selectionList)}
+        className={css(styles.selectionList, className)}
         onChange={(event) => onChange(event.target.value)}>
         {options}
     </select>
@@ -25,5 +30,11 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+CustomSelection.propTypes = {
+  className: PropTypes.object,
+  items: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 export default CustomSelection;

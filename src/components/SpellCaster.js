@@ -2,7 +2,13 @@ import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomTitle from './CustomTitle';
 import CustomButton from './CustomButton';
+import PropTypes from 'prop-types';
 
+/**
+ * Component which is designed to use spell slots, inventory item quantity, etc.
+ * Good reuseabiliy.
+ * @param {Object} props
+ */
 const SpellCaster = ({className, label, onClick, fontSize = 20, contition=true,
     passedArgument}) => {
   const styles = StyleSheet.create({
@@ -30,6 +36,21 @@ const SpellCaster = ({className, label, onClick, fontSize = 20, contition=true,
       </CustomButton>
     </div>
   );
+};
+
+SpellCaster.propTypes = {
+  className: PropTypes.object,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  onClick: PropTypes.func.isRequired,
+  fontSize: PropTypes.number,
+  contition: PropTypes.bool,
+  passedArgument: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
 };
 
 export default SpellCaster;

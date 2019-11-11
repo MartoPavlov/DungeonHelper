@@ -1,6 +1,11 @@
 import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that is used as a label before input, counters, etc. Highly reuseable.
+ * @param {Object} props 
+ */
 const CustomTitle = ({children, className}) => {
   const styles = StyleSheet.create({
     label: {
@@ -15,6 +20,14 @@ const CustomTitle = ({children, className}) => {
   return (
     <div className={css(styles.label, className)}>{children}</div>
   );
+};
+
+CustomTitle.propTypes = {
+  className: PropTypes.object,
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.element,
+  ]),
 };
 
 export default CustomTitle;

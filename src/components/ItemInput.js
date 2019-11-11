@@ -3,11 +3,18 @@ import {css, StyleSheet} from 'aphrodite';
 import CustomInput from './CustomInput';
 import Counter from './Counter';
 import CustomTitle from './CustomTitle';
+import PropTypes from 'prop-types';
 
-const ItemInput = ({label, name, count, onChange, increment, decrement}) => {
+/**
+ * Component that is used for iinputing the information about the items in the
+ * InventoryCreator
+ * @param {Object} props
+ * @see InventoryCreator
+ */
+const ItemInput = ({className, label, name, count, onChange, increment, decrement}) => {
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container, className)}>
       <CustomTitle>{label}</CustomTitle>
       <CustomInput value={name} onChange={onChange} />
       <span className={css(styles.counter)}>{count}</span>
@@ -32,5 +39,18 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 });
+
+ItemInput.propTypes = {
+  className: PropTypes.object,
+  label: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  name: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  increment: PropTypes.func.isRequired,
+  decrement: PropTypes.func.isRequired,
+};
 
 export default ItemInput;

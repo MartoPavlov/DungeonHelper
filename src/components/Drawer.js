@@ -2,7 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomButton from './CustomButton';
 import If from './If';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that renders a button that when clicked slides down a new element
+ * @param {Object} props 
+ */
 const Drawer = ({className, label, childHeight=40, children}) => {
   const [shown, setShown] = useState(false);
   const translate = 'translateY(-'+childHeight+'px)';
@@ -60,6 +65,19 @@ const Drawer = ({className, label, childHeight=40, children}) => {
       </div>
     </div>
   );
+};
+
+Drawer.propTypes = {
+  className: PropTypes.object,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  childHeight: PropTypes.number,
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.node,
+  ]).isRequired,
 };
 
 export default Drawer;

@@ -1,8 +1,15 @@
 import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import {FixedSizeList} from 'react-window';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that handles list creation.
+ * @param {Object} props
+ * @todo Enable auto resizing.
+ */
 const CustomList = ({className, data, renderItem, height = 0, width = 200, itemSize = 32}) => {
+  //auto detect height
   if (height === 0) height = data.length * itemSize;
 
   const styles = StyleSheet.create({
@@ -36,6 +43,18 @@ const CustomList = ({className, data, renderItem, height = 0, width = 200, itemS
       </div>
     </div>
   );
+};
+
+CustomList.propTypes = {
+  className: PropTypes.object,
+  data : PropTypes.array,
+  renderItem: PropTypes.func.isRequired,
+  height: PropTypes.number,
+  width: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]),
+  itemSize: PropTypes.number,
 };
 
 export default CustomList;

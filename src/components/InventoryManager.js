@@ -4,7 +4,15 @@ import {StyleSheet} from 'aphrodite';
 import CustomList from './CustomList';
 import SpellCaster from './SpellCaster';
 import CustomHeading from './CustomHeading';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that give a representation of the inventory and also has the 
+ * mechanism to change it.
+ * @param {Object} props
+ * @todo add a functionality that changes this component to InventoryCreator
+ * to add items.
+ */
 const InventoryManager = ({className, onClick}) => {
   const inventory = useSelector((state) => state.inventory.inventory);
   const [bounds,  setBounds] = useState({
@@ -60,5 +68,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   }
 });
+
+InventoryManager.propTypes = {
+  className: PropTypes.object,
+  onClick: PropTypes.func.isRequired,
+};
 
 export default InventoryManager;

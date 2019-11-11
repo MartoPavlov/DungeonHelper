@@ -102,9 +102,9 @@ class CreateCharacter extends Component {
     const {abilities, inventory} = this.props;
 
     if (!name) {
-      this.fireAnError('The name field is emptry!');
+      this.fireAnError('The name field is emptry');
     }
-    if (hp.max <= 0) {
+    if (Number.isInteger() && hp.max <= 0) {
       this.fireAnError('The HP must a possitive number');
     }
     if (abilities.length === 0) {

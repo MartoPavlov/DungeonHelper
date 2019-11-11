@@ -1,7 +1,12 @@
 import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import {css, StyleSheet} from 'aphrodite';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that renders a checkbox with on check animation
+ * @param {Object} props 
+ */
 const CustomCheckbox = ({className, size, checked, onClick}) => {
   const animateCheck = {
     'from': {
@@ -61,6 +66,13 @@ const CustomCheckbox = ({className, size, checked, onClick}) => {
       </div>
     </div>
   );
+};
+
+CustomCheckbox.propTypes = {
+  className: PropTypes.object,
+  size: PropTypes.number,
+  checked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default CustomCheckbox;

@@ -11,7 +11,12 @@ import CustomTitle from './CustomTitle';
 import CustomButton from './CustomButton';
 import {setUser} from '../redux/index';
 import Firebase from '../firebase/Firebase';
+import PropTypes from 'prop-types';
 
+/**
+ * The navigation bar on the top of the page.
+ * @param {Object} props
+ */
 const NavigationBar = ({className, history, enqueueSnackbar}) => {
   const user  = useSelector((state) => state.user.user)
   const dispatch = useDispatch();
@@ -78,7 +83,7 @@ const NavigationBar = ({className, history, enqueueSnackbar}) => {
               </Typography>
             </Grid>
             <Grid>
-              <If condition={user}>
+              <If condition={!!user}>
                 <div className={css(styles.user)}>
                   <CustomTitle className={styles.label}>{email}</CustomTitle>
                   <CustomButton
@@ -96,6 +101,10 @@ const NavigationBar = ({className, history, enqueueSnackbar}) => {
       </AppBar>
     </div>
   );
+};
+
+NavigationBar.propTypes = {
+  className: PropTypes.object,
 };
 
 export default withSnackbar(NavigationBar);
