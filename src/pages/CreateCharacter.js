@@ -43,6 +43,7 @@ class CreateCharacter extends Component {
     if (!this.props.user) {
       this.props.history.push('/');
     }
+    this.props.resetRedux();
   }
 
   handleOnNameChanged(newName) {
