@@ -8,7 +8,12 @@ import CustomList from './CustomList';
 import CustomLabel from './CustomLabel';
 import CustomHeading from './CustomHeading'
  
-
+/**
+ * Component that renders an inventory creator functionality of the application.
+ * It works direcly with redux.
+ * @todo probably is not a bad idea to devide this component into more smaller
+ * ones
+ */
 class InventoryCreator extends Component {
   constructor() {
     super();
@@ -42,18 +47,32 @@ class InventoryCreator extends Component {
     });
   }
 
+  /**
+   * Updates the state when you enter text in the item name field.
+   * @param {String} text 
+   */
   handleItemNameChange(text) {
     this.setState({
       name: text,
     });
   }
 
+  /**
+   * Works closely with the Counter component - increments the count of the 
+   * item.
+   * @see Counter
+   */
   handleIncrementCount() {
     this.setState((prevState) => ({
       count: prevState.count + 1,
     }));
   }
 
+  /**
+   * Works closely with the Counter component - decrements the count of the 
+   * item.
+   * @see Counter
+   */
   handleDecrementCount() {
     this.setState((prevState) => ({
       count: prevState.count - 1,
@@ -102,7 +121,7 @@ class InventoryCreator extends Component {
             data={inventory} 
             renderItem={(item) => {
               return (
-                <CustomLabel className={styles.label}  width={'40%'} fontSize={18}>
+                <CustomLabel className={styles.label}>
                   {item.name}({item.count})
                 </CustomLabel>
               );
@@ -122,6 +141,8 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 10,
     marginBottom: 10,
+    width: '40%',
+    fontSize: 18,
   }
 });
 

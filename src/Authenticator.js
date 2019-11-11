@@ -34,11 +34,11 @@ class Authenticator extends Component {
   render() {
     return (
       <Router>
-        <NavigationBar />
         <If
           condition={this.state.done}
           els={this.renderLoadingScreen()}
         >
+          <Route path='/' component={NavigationBar} />
           <Route exact path="/" component={Login} />
           <Route path="/create" component={CreateCharacter} />
           <Route path="/register" component={Register} />

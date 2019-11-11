@@ -6,13 +6,19 @@ import Fade from '@material-ui/core/Fade';
 import CustomButton from './CustomButton';
 import CustomHeading from './CustomHeading';
 import If from './If';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that renders a button which when clicked showes a modal. Highly
+ * reuseable.
+ * @param {Object} props
+ */
 const ModalSection = ({title, label, children, width='20%', className}) => {
   const [open, setOpen] = useState(false);
   
   return (
     <div className={css(styles.container, className)}>
-      <If condition={title}>
+      <If condition={!!title}>
         <CustomHeading>{title}</CustomHeading>
       </If>
       <Modal
@@ -61,5 +67,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   }
 });
+
+ModalSection.propTypes = {
+  className: PropTypes.object,
+  title: PropTypes.string,
+  label: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  children: PropTypes.element.isRequired,
+  width: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]),
+};
 
 export default ModalSection

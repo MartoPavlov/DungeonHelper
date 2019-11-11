@@ -2,14 +2,21 @@ import React from 'react';
 import {StyleSheet, css} from 'aphrodite';
 import {useSelector, useDispatch} from 'react-redux';
 import Counter from './Counter';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that renders a counter that increment or decrement a value in the
+ * redux store. Used in LabeledReduxCounter
+ * @param {Object} props
+ * @see LabeledReduxCounter
+ */
 const ReduxCounter = ({extractValue, increment, decrement,
-    min, max, dictionaryLabel}) => {
+    min, max, dictionaryLabel, className}) => {
   const value = useSelector((state) => extractValue(state, dictionaryLabel));
   const dispatch = useDispatch();
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container, className)}>
       <span className={css(styles.counter)}>{value}</span>
       <Counter
         value={value}
@@ -40,5 +47,18 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 });
+
+ReduxCounter.propTypes = {
+  className: PropTypes.object,
+  extractValue: PropTypes.func.isRequired,
+  increment: PropTypes.func.isRequired,
+  decrement: PropTypes.func.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  dictionaryLabel: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+};
 
 export default ReduxCounter;

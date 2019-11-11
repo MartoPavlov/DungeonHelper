@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {css, StyleSheet} from 'aphrodite';
+import {withSnackbar} from 'notistack';
 import CustomInput from './CustomInput'
 import CustomSmallInput from './CustomSmallInput';
 import CustomSelection from './CustomSelection';
@@ -10,6 +11,10 @@ import CustomHeading from './CustomHeading';
 import AbilityList from './AbilityList';
 import {addAbility} from '../redux/index';
 
+/**
+ * Component that is used to add abilities to the ability list.
+ * It updates the info directly in the redux store.
+ */
 class AbilityAdder extends Component {  
   constructor() {
     super();
@@ -45,7 +50,15 @@ class AbilityAdder extends Component {
 
   handleAddingAbility() {
     const {name, uses, cooldown} = this.state;
-    if (!name || uses <= 0) return;
+    if (!name || uses <= 0) {
+      if (!name) {
+        this.fireAnError('The name field is empty');
+      }
+      if (Number.isInteger() && uses <= 0) {
+        this.fireAnError('The uses must be possitive number');
+      }
+      return;
+    }
     const tempAbility = {
       name: name,
       uses: uses,
@@ -59,6 +72,10 @@ class AbilityAdder extends Component {
       uses: 0,
       cooldown: 0,
     });
+  }
+
+  fireAnError(error) {
+    this.props.enqueueSnackbar(error, {variant: 'error'})
   }
 
   render() {
@@ -105,4 +122,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 }
 
-export default connect(null, mapDispatchToProps)(AbilityAdder);
+export default withSnackbar(connect(null, mapDispatchToProps)(AbilityAdder));

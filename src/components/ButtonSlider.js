@@ -1,10 +1,18 @@
 import React, {useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
+import PropTypes from 'prop-types';
 import CustomButton from './CustomButton';
 import If from './If';
 import PlusMinusIcon from './PlusMinusIcon';
 import CustomSmallInput from './CustomSmallInput';
 
+/**
+ * Component that renders button that when clicked slides to the right and 
+ * shows an icon and an input fild. Note that this component is not
+ * reusable in the most cases.
+ * @param {Object} props
+ * @todo Improve reuseability, maybe change it to a class component
+ */
 const ButtonSlider = ({className, value, onChange, onClick}) => {
   const [clicked, setClicked] = useState(false);
   const [minus , setMinus] = useState(true);
@@ -67,5 +75,15 @@ const ButtonSlider = ({className, value, onChange, onClick}) => {
     </div>
   );
 };
+
+ButtonSlider.propTypes = {
+  className: PropTypes.object,
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
+}
 
 export default ButtonSlider;

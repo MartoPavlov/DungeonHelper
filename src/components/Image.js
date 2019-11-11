@@ -1,6 +1,11 @@
 import React from 'react';
 import { css, StyleSheet } from 'aphrodite';
+import PropTypes from 'prop-types';
 
+/**
+ * Custom component that renders an image. Good reuseability.
+ * @param {Object} props
+ */
 const Image = ({src, className}) => {
   return (
     <div className={css(styles.container)}>
@@ -14,5 +19,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+Image.propTypes = {
+  className: PropTypes.object,
+  src: PropTypes.string.isRequired,
+};
 
 export default Image;

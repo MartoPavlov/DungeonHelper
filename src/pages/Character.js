@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {css, StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid';
+import {withSnackbar} from 'notistack';
 import {
   setBasicStats, loadStats, loadSpellSlots, loadAbilities, loadInventory
 } from '../redux/index';
@@ -21,6 +22,9 @@ import Drawer from '../components/Drawer';
 import SmallInputField from '../components/SmallInputField';
 import CustomButton from '../components/CustomButton';
 
+/**
+ * Page responsible for ingame character updates. Still not completed!
+ */
 class Character extends Component {
   constructor() {
     super();
@@ -43,48 +47,55 @@ class Character extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.user) {
-      this.props.history.push('/');
-      return;
-    }
-    const user = this.props.user;
-    let charName;
-    try {
-      charName = this.props.location.state.name;
-    } catch(error) {
-      this.props.history.push('/select');
-      return;
-    }
+    if (this.userNotAuthenticated()) {
+      this.forceAuthentication();
+    } else {
+      const user = this.props.user;
+      let charName;
+      try {
+        charName = this.props.location.state.name;
+      } catch(error) {
+        this.props.history.push('/select');
+        return;
+      }
 
-    Firebase.database().ref('characterInfo/'+user+'/'+charName).on('value', (data) => {
-      const val = data.val();
+      Firebase.database().ref('characterInfo/'+user.uid+'/'+charName).on('value', (data) => {
+        const val = data.val();
+
+        if (!val) return;
+        const {name, hp, level, stats, spells, abilities, inventory} = val;
+        const basics = {
+          name: name,
+          hp: hp,
+          level: level,
+        };
       
-      if (!val) return;
-      const {name, hp, level, stats, spells, abilities, inventory} = val;
-      const basics = {
-        name: name,
-        hp: hp,
-        level: level,
-      };
-  
-      this.props.loadAll(basics, stats, spells, abilities, inventory);
-      const character = {
-        name: name,
-        hp: hp,
-        level: level,
-        stats: stats,
-        spells: spells,
-        abilities: abilities,
-        inventory: inventory,
-      };
-  
-      this.setState({
-        character: character,
-        loaded: true,
+        // loads all the character info into the redux store
+        this.props.loadAll(basics, stats, spells, abilities, inventory);
+        const character = {
+          name: name,
+          hp: hp,
+          level: level,
+          stats: stats,
+          spells: spells,
+          abilities: abilities,
+          inventory: inventory,
+        };
+      
+        this.setState({
+          character: character,
+          loaded: true,
+        });
       });
-    });
+    }
+    
   }
 
+  /**
+   * Adds or substracts hp from character then updates the info
+   * in the redux store and the database
+   * @param {Number} value 
+   */
   changeHp(value) {
     const character = this.state.character;
     let hp = Number(character.hp.curr);
@@ -110,8 +121,12 @@ class Character extends Component {
     });
   }
 
+  /**
+   * Takes away a spell slot given as a parameter. Also updates
+   * the redux store and the database.
+   * @param {Number} level 
+   */
   castSpell(level) {
-    console.log(level);
     const slot = 'slot' + level;
     const character = this.state.character;
     let currUses = character.spells[slot].curr;
@@ -128,6 +143,11 @@ class Character extends Component {
     }
   }
 
+  /**
+   * Takes away one usage from an ability. Also updates the redux
+   * store and the database
+   * @param {String} name 
+   */
   useAbility(name) {
     const character = this.state.character;
     const abilities = character.abilities;
@@ -146,15 +166,20 @@ class Character extends Component {
     });
   }
 
+  /**
+   * Removes one quantity of an item. Updates the redux store
+   * and the database.
+   * @param {String} name 
+   */
   useItem(name) {
     const character = this.state.character;
-    const inventory = character.inventory;
+    let inventory = character.inventory;
 
     for (let i=0; i<inventory.length; i++) {
       if (inventory[i].name === name) {
         inventory[i].count--;
         if (inventory[i].count === 0) {
-          inventory.filter((item) => item.count > 0);
+          inventory = inventory.filter((item) => item.count > 0);
         }
         break;
       }
@@ -168,15 +193,18 @@ class Character extends Component {
     });
   }
 
+  /**
+   * Updates the database using the current state of the character
+   * variable.
+   */
   updateCharacterInDatabase() {
     const user = this.props.user;
     const charName = this.state.character.name;
 
-    Firebase.database().ref('characterInfo/'+user+'/'+charName)
+    Firebase.database().ref('characterInfo/'+user.uid+'/'+charName)
     .update(this.state.character).then(() => {
-      console.log('Done')
     }).catch((error) => {
-      console.error(error.massage);
+      this.props.enqueueSnackbar(error.message, {variant: 'error'})
     });
   }
 
@@ -186,6 +214,11 @@ class Character extends Component {
     });
   }
 
+
+  /**
+   * Restores a given amount of hp taken from the input state variable
+   * and all the abilities which have a cooldown of 'short rest'
+   */
   handleShortRest() {
     const hp = Number(this.state.input);
     this.changeHp(hp);
@@ -206,6 +239,10 @@ class Character extends Component {
     });
   }
 
+  /**
+   * Restores a character to full health, at maximum number of spell
+   * slots and with all abilities available
+   */
   handleLongRest() {
     const character = this.state.character;
     // HP-----------------
@@ -246,6 +283,14 @@ class Character extends Component {
 
   renderLoadingScreen() {
     return <LoadingScreen height={window.innerHeight*7/9}/>;
+  }
+
+  userNotAuthenticated() {
+    return !this.props.user;
+  }
+
+  forceAuthentication() {
+    this.props.history.push('/');
   }
 
   render() {
@@ -422,4 +467,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Character);
+export default
+  withSnackbar(connect(mapStateToProps, mapDispatchToProps)(Character));

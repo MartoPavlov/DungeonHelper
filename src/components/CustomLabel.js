@@ -1,15 +1,20 @@
 import React from 'react';
 import {css, StyleSheet} from 'aphrodite';
+import PropTypes from 'prop-types';
 
-const CustomLabel = ({className, children, fontSize = 16, width = '20%'}) => {
+/**
+ * Component that renders a label with the custom background. Highly reuseable
+ * @param {Object} props 
+ */
+const CustomLabel = ({className, children}) => {
   const styles = StyleSheet.create({
     label: {
       display: 'inline-block',
-      width: width,
-      fontSize: fontSize,
+      width: '20%',
+      fontSize: 16,
       backgroundColor: '#ec2127',
       color: '#fff',
-      borderRadius: 5,
+      borderRadius: 16,
       textAlign: 'center',
     }
   });
@@ -17,6 +22,14 @@ const CustomLabel = ({className, children, fontSize = 16, width = '20%'}) => {
   return (
     <div className={css(styles.label, className)}>{children}</div>
   );
+};
+
+CustomLabel.propTypes = {
+  className: PropTypes.object,
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.node,
+  ]),
 };
 
 export default CustomLabel;

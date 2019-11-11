@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Grid from '@material-ui/core/Grid';
+import {withSnackbar} from 'notistack';
 import CustomButton from '../components/CustomButton';
 import CustomTitle from '../components/CustomTitle';
 import CustomInput from '../components/CustomInput';
@@ -10,14 +11,16 @@ import Image from '../components/Image';
 import dandd from '../assets/dandd.png';
 import Firebase from '../firebase/Firebase';
 
-export default class Register extends Component {
+/**
+ * The Registration page of the applications
+ */
+class Register extends Component {
   constructor() {
     super();
     this.state = {
       email: '',
       password: '',
       confPassword: '',
-      error: '',
       agreed: false,
     };
 
@@ -53,21 +56,38 @@ export default class Register extends Component {
     })
   }
 
+  fireAnError(error) {
+    this.props.enqueueSnackbar(error, {variant: 'error'});
+  }
+
   handleOnRegisterClick() {
     const {email, password, confPassword, agreed} = this.state;
 
-    if (password !== confPassword || !agreed) {
-      let massage = '';
+    if (!email || !password || password !== confPassword || !agreed) {
+      if (!email) {
+        this.fireAnError('The email field is empty');
+      }
       if (!agreed) {
-        massage = 'You haven\'t agreed with the terms';
-      } else {
-        massage = 'The Password and Confirm Password fields must be the same';
+        this.fireAnError('You haven\'t agreed with the terms');
+      }
+      if (!password) {
+        this.fireAnError('The password field is empty');
+      }
+      if (password !== confPassword) {
+        this.fireAnError('The Password and Confirm Password fields must be the same');
       }
       this.setState({
-        error: massage,
+        password: '',
+        confPassword: '',
       });
       return;
     }
+
+    this.createUserInDatabase();
+  }
+
+  createUserInDatabase() {
+    const {email, password} = this.state;
 
     Firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
       this.setState({
@@ -76,21 +96,25 @@ export default class Register extends Component {
         confPassword: '',
         agreed: false,
       }, () => {
-        this.props.history.push('/');
+        this.navigateToLogin();
       });
     }).catch((error) => {
-      console.log(error);
       this.setState({
-        error: error.message,
-      });
+        password: '',
+        confPassword: '',
+      }, () => this.fireAnError(error.message))
     });
   }
 
+  navigateToLogin() {
+    this.props.history.push('/');
+  }
+
   render() {
-    const {email, password, confPassword, agreed, error} = this.state;
+    const {email, password, confPassword, agreed} = this.state;
 
     return (
-      <div>
+      <form>
         <Image className={styles.image} src={dandd} />
         <Grid container spacing={2}>
           <Grid item xs={5}>
@@ -142,10 +166,7 @@ export default class Register extends Component {
         >
           Register
         </CustomButton>
-        <Text className={styles.error}>
-          {error}
-        </Text>
-      </div>
+      </form>
     );
   }
 }
@@ -157,7 +178,7 @@ const styles = StyleSheet.create({
     textAlign: 'end',
   },
   image: {
-    width: '30%',
+    width: 400,
   },
   text: {
     marginTop: 10,
@@ -175,3 +196,4 @@ const styles = StyleSheet.create({
   }
 });
 
+export default withSnackbar(Register);

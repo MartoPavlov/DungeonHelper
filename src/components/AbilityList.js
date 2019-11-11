@@ -6,6 +6,10 @@ import CustomButton from './CustomButton';
 import AbilityPresentor from './AbilityPresentor';
 import CustomList from './CustomList';
 
+/**
+ * Components used to display all the abilities. It uses the
+ * data in the redux store.
+ */
 const AbilityList = () => {
   const abilities = useSelector((state) => state.abilities.abilities);
   const [open, setOpen] = useState(false);

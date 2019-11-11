@@ -2,7 +2,13 @@ import React, {useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomTitle from './CustomTitle';
 import ButtonSlider from './ButtonSlider';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that renders a label, a text with value and a ButtonSlider. Not
+ * very reuseable.
+ * @param {Object} props
+ */
 const DifferenceContainer = ({className, label, value, onClick}) => {
   const [plusMinusValue, setValue] = useState(undefined);
   
@@ -32,5 +38,15 @@ const styles = StyleSheet.create({
 
   }
 });
+
+DifferenceContainer.propTypes = {
+  className: PropTypes.object,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired,
+  value: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
 
 export default DifferenceContainer;
