@@ -10,8 +10,6 @@ import PropTypes from 'prop-types';
  * Component that give a representation of the inventory and also has the 
  * mechanism to change it.
  * @param {Object} props
- * @todo add a functionality that changes this component to InventoryCreator
- * to add items.
  */
 const InventoryManager = ({className, onClick}) => {
   const inventory = useSelector((state) => state.inventory.inventory);
