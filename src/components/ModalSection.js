@@ -34,7 +34,11 @@ const ModalSection = ({title, label, children, width='20%', className}) => {
         <Fade in={open}>
           <div className={css(styles.modalContent)}>
             {children}
-            <CustomButton onClick={() => setOpen(false)} fontSize={14}>
+            <CustomButton
+              className={styles.closeButton}
+              onClick={() => setOpen(false)}
+              fontSize={14}
+            >
               CLOSE
             </CustomButton>
           </div>
@@ -54,6 +58,7 @@ const styles = StyleSheet.create({
   modal: {
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'center',
   },
   modalContent: {
     position: 'absolute',
@@ -65,6 +70,9 @@ const styles = StyleSheet.create({
     outline: 'none',
     padding: 5,
     borderRadius: 10,
+  },
+  closeButton: {
+    display: 'inline-block'
   }
 });
 
@@ -75,7 +83,10 @@ ModalSection.propTypes = {
     PropTypes.number,
     PropTypes.string,
   ]).isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.array,
+  ]).isRequired,
   width: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string,

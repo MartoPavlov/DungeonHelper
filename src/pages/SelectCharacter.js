@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import {connect} from 'react-redux';
+import { withSnackbar } from 'notistack';
 import Firebase from '../firebase/Firebase';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import IconButton from '../components/IconButton';
@@ -74,6 +75,11 @@ class SelectCharacter extends Component {
 
   forceAuthentication() {
     this.props.history.push('/');
+    this.fireAnError('You need to login to view this page');
+  }
+
+  fireAnError(error) {
+    this.props.enqueueSnackbar(error, {variant: 'error'});
   }
 
   collectCharactersFromDatabase() {
@@ -157,4 +163,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(SelectCharacter);
+export default withSnackbar(connect(mapStateToProps)(SelectCharacter));

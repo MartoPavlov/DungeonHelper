@@ -20,6 +20,7 @@ import {STATS, SPELL_SLOTS} from '../utility/constants';
 import InventoryManager from '../components/InventoryManager';
 import Drawer from '../components/Drawer';
 import SmallInputField from '../components/SmallInputField';
+import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
 
 /**
@@ -35,6 +36,7 @@ class Character extends Component {
       },
       input: '',
       loaded: false,
+      addingItem: false,
     };
 
     this.changeHp = this.changeHp.bind(this);
@@ -44,6 +46,8 @@ class Character extends Component {
     this.useItem = this.useItem.bind(this);
     this.handleShortRest = this.handleShortRest.bind(this);
     this.handleLongRest = this.handleLongRest.bind(this);
+    this.handleItemAdding = this.handleItemAdding.bind(this);
+    this.updateInventory = this.updateInventory.bind(this);
   }
 
   componentDidMount() {
@@ -194,6 +198,17 @@ class Character extends Component {
   }
 
   /**
+   * Using redux as source
+   */
+  updateInventory(inventory) {
+    const character = this.state.character;
+    character.inventory = inventory;
+    this.setState({
+      character: character,
+    }, () => this.updateCharacterInDatabase());
+  }
+
+  /**
    * Updates the database using the current state of the character
    * variable.
    */
@@ -204,7 +219,7 @@ class Character extends Component {
     Firebase.database().ref('characterInfo/'+user.uid+'/'+charName)
     .update(this.state.character).then(() => {
     }).catch((error) => {
-      this.props.enqueueSnackbar(error.message, {variant: 'error'})
+      this.fireAnError(error.message);
     });
   }
 
@@ -291,6 +306,26 @@ class Character extends Component {
 
   forceAuthentication() {
     this.props.history.push('/');
+    this.fireAnError('You need to login to view this page');
+  }
+
+  renderInventoryCreator() {
+    return <InventoryCreator />;
+  }
+
+  handleItemAdding() {
+    const {addingItem} = this.state;
+
+    if (addingItem) {
+      this.updateInventory(this.props.inventory);
+    }
+    this.setState({
+      addingItem: !addingItem,
+    })
+  }
+
+  fireAnError(error) {
+    this.props.enqueueSnackbar(error, {variant: 'error'});
   }
 
   render() {
@@ -300,7 +335,8 @@ class Character extends Component {
     } catch(error) { return <div></div>; }
     
     const {hp, level, stats, spells, abilities} = this.state.character;
-    const {input} = this.state;
+    const {input, addingItem} = this.state;
+    const addingItemStatus = addingItem ? 'APPLY' : 'ADD'; 
     
     return (
       <div>
@@ -382,10 +418,19 @@ class Character extends Component {
               <ModalSection
                 label='Inventory'
               >
-                <InventoryManager
-                  className={styles.label}
-                  onClick={this.useItem}
-                />
+                <If condition={!addingItem} els={this.renderInventoryCreator()}>
+                  <InventoryManager
+                    className={styles.label}
+                    onClick={this.useItem}
+                  />
+                </If>
+                <CustomButton
+                  className={styles.addItemButton}
+                  onClick={() => this.setState(this.handleItemAdding)}
+                  fontSize={14}
+                >
+                  {addingItemStatus}
+                </CustomButton>
               </ModalSection>
             </Grid>
             <Grid className={css(styles.grid)} item xs={12}>
@@ -442,12 +487,17 @@ const styles = StyleSheet.create({
   },
   shortRestButton: {
     marginTop: 7,
+  },
+  addItemButton: {
+    display: 'inline-block',
+    marginRight: 10,
   }
 });
 
 const mapStateToProps = (state) => {
   return {
     user: state.user.user,
+    inventory: state.inventory.inventory,
   };
 }
 
@@ -467,5 +517,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default
-  withSnackbar(connect(mapStateToProps, mapDispatchToProps)(Character));
+export default withSnackbar(connect(mapStateToProps, mapDispatchToProps)(Character));

@@ -112,12 +112,12 @@ class InventoryCreator extends Component {
         />
         <div>
           <CustomButton onClick={this.handleCreateButtonClick} fontSize={14}>
-            CREATE
+            ADD
           </CustomButton>
           <CustomList
             className={styles.list}
-            height={height * 2/5 + 20}
-            width={width * 7/10}
+            width={width*7/10}
+            height={height*5/9 - 88}
             data={inventory} 
             renderItem={(item) => {
               return (
