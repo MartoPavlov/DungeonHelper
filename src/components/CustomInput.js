@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * Component that creates a input field. Highly reusable.
  * @param {Object} props 
  */
-const CustomInput = ({value, onChange, password, className}) => {
+const CustomInput = ({value, onChange, password, className, maxLength = 20}) => {
   const type = password ? 'password' : 'text';
   const autoComplete = password ? 'current-password' : '';
 
@@ -17,6 +17,7 @@ const CustomInput = ({value, onChange, password, className}) => {
       value={value}
       onChange={(event) => onChange(event.target.value)}
       autoComplete={autoComplete}
+      maxLength={maxLength}
     />
   );
 };
@@ -46,6 +47,7 @@ CustomInput.propTypes = {
   ]).isRequired,
   password: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+  maxLength: PropTypes.number,
 };
 
 export default CustomInput;
