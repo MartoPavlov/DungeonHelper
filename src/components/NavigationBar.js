@@ -11,6 +11,7 @@ import CustomTitle from './CustomTitle';
 import CustomButton from './CustomButton';
 import {setUser} from '../redux/index';
 import Firebase from '../firebase/Firebase';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import PropTypes from 'prop-types';
 
 /**
@@ -59,6 +60,10 @@ const NavigationBar = ({className, history, enqueueSnackbar}) => {
       position: 'inherit',
       display: 'inline-block',
       marginLeft: 7,
+    },
+    arrowBackIcon: {
+      marginRight: 15,
+      cursor: 'pointer',
     }
   });
 
@@ -79,6 +84,10 @@ const NavigationBar = ({className, history, enqueueSnackbar}) => {
           <Grid container justify='space-between' alignItems='center'>
             <Grid>
               <Typography variant='h4'>
+                <ArrowBackIcon
+                  className={css(styles.arrowBackIcon)}
+                  onClick={() => history.goBack()}
+                />
                 Dungeon Helper
               </Typography>
             </Grid>
