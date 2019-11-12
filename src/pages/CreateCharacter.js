@@ -42,6 +42,7 @@ class CreateCharacter extends Component {
   componentDidMount() {
     if (!this.props.user) {
       this.props.history.push('/');
+      this.fireAnError('You need to login to view this page');
     }
     this.props.resetRedux();
   }

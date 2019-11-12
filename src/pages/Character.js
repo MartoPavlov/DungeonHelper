@@ -219,7 +219,7 @@ class Character extends Component {
     Firebase.database().ref('characterInfo/'+user.uid+'/'+charName)
     .update(this.state.character).then(() => {
     }).catch((error) => {
-      this.props.enqueueSnackbar(error.message, {variant: 'error'})
+      this.fireAnError(error.message);
     });
   }
 
@@ -306,6 +306,7 @@ class Character extends Component {
 
   forceAuthentication() {
     this.props.history.push('/');
+    this.fireAnError('You need to login to view this page');
   }
 
   renderInventoryCreator() {
@@ -321,6 +322,10 @@ class Character extends Component {
     this.setState({
       addingItem: !addingItem,
     })
+  }
+
+  fireAnError(error) {
+    this.props.enqueueSnackbar(error, {variant: 'error'});
   }
 
   render() {
