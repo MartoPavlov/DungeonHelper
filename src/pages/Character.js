@@ -22,9 +22,11 @@ import Drawer from '../components/Drawer';
 import SmallInputField from '../components/SmallInputField';
 import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
+import FloatingText from '../components/FloatingText';
 
 /**
  * Page responsible for ingame character updates. Still not completed!
+ * @todo Add Effects, End round, HP damage system and Level up!
  */
 class Character extends Component {
   constructor() {
@@ -37,6 +39,11 @@ class Character extends Component {
       input: '',
       loaded: false,
       addingItem: false,
+      floatingText: {
+        message: '',
+        variant: 'possitive',
+        playState: 'paused',
+      },
     };
 
     this.changeHp = this.changeHp.bind(this);
@@ -116,6 +123,7 @@ class Character extends Component {
       character: character,
       input: '',
     }, () => {
+      this.floatingHpChange(value);
       this.updateCharacterInDatabase();
       this.props.loadBasics({
         name: character.name,
@@ -328,6 +336,38 @@ class Character extends Component {
     this.props.enqueueSnackbar(error, {variant: 'error'});
   }
 
+  floatingHpChange(value) {
+    if (value > 0) {
+      this.addFloatingText('+'+value, 'possitive');
+    } else if (value < 0) {
+      this.addFloatingText(value, 'negative');
+    }
+  }
+
+  addFloatingText(message, variant) {
+    const floatingText = {
+      message: message,
+      variant: variant,
+      playState: 'running',
+    };
+
+    const emptyFloatingText = {
+      message: '',
+      variant: 'possitive',
+      playState: 'paused',
+    }
+
+    this.setState({
+      floatingText: floatingText,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          floatingText: emptyFloatingText,
+        });
+      }, 1500);
+    });
+  }
+
   render() {
     let name;
     try {
@@ -335,8 +375,8 @@ class Character extends Component {
     } catch(error) { return <div></div>; }
     
     const {hp, level, stats, spells, abilities} = this.state.character;
-    const {input, addingItem} = this.state;
-    const addingItemStatus = addingItem ? 'APPLY' : 'ADD'; 
+    const {input, addingItem, floatingText} = this.state;
+    const addingItemStatus = addingItem ? 'APPLY' : 'ADD';
     
     return (
       <div>
@@ -455,6 +495,13 @@ class Character extends Component {
               </CustomButton>
             </Grid>
           </Grid>
+          <If condition={!!floatingText.message}>
+            <FloatingText
+              message={floatingText.message}
+              variant={floatingText.variant}
+              playState={floatingText.playState}
+            />
+          </If>
         </If>
       </div>
     );
