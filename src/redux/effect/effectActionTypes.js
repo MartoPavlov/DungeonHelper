@@ -1,0 +1,4 @@
+export const ADD_EFFECT = 'ADD_EFFECT';
+export const UPDATE_DURATIONS = 'UPDATE_DURATIONS';
+export const LOAD_EFFECTS = 'LOAD_EFFECTS';
+export const RESET_EFFECTS = 'RESET_EFFECTS';

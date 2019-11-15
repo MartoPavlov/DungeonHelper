@@ -433,6 +433,7 @@ class Character extends Component {
               />
             </Grid>
             <Grid className={css(styles.grid)} item xs={12}>
+              <CustomButton className={styles.grid}>Add Effect</CustomButton>
               <CustomList
                 data={abilities}
                 width={'100%'}
