@@ -21,7 +21,7 @@ const isPartOfTheArray = (name, array) => {
 } 
 
 const updateDurations = (state) => {
-  const effects = state,effects;
+  const effects = state.effects;
   const toRemove = [];
 
   for (let i=0; i<effects.length; i++) {
