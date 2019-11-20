@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * after 1.5 sec with a sliding up effect
  * @param {Object} props
  */
-const FloatingText = ({className, message, variant, playState}) => {
+const FloatingText = ({className, message, variant, playState = 'running'}) => {
   const animateFloating = {
     'from': {
       opacity: 0.9,
@@ -22,7 +22,7 @@ const FloatingText = ({className, message, variant, playState}) => {
     floatingText: {
       animationName: [animateFloating],
       animationDuration: '1500ms',
-      animationIterationCount: 'infinity',
+      animationIterationCount: 1,
       animationFillMode: 'forwards',
       animationPlayState: playState,
       fontSize: 60,
@@ -30,9 +30,8 @@ const FloatingText = ({className, message, variant, playState}) => {
       top: '50%',
       left: '50%',
       pointerEvents: 'none',
-      opacity: 0,
     },
-    possitive: {
+    positive: {
       color: '#238256',
     },
     negative: {
@@ -60,11 +59,11 @@ FloatingText.propTypes = {
     PropTypes.string,
   ]).isRequired,
   variant: PropTypes.oneOf([
-    'possitive', 'negative', 'special', 'normal'
+    'positive', 'negative', 'special', 'normal'
   ]).isRequired,
   playState: PropTypes.oneOf([
     'running', 'paused'
-  ]).isRequired,
+  ]),
 };
 
 export default FloatingText;

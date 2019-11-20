@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {css, StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid';
@@ -23,6 +24,7 @@ import SmallInputField from '../components/SmallInputField';
 import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
 import FloatingText from '../components/FloatingText';
+import EffectCreator from '../components/EffectCreator';
 
 /**
  * Page responsible for ingame character updates. Still not completed!
@@ -39,11 +41,8 @@ class Character extends Component {
       input: '',
       loaded: false,
       addingItem: false,
-      floatingText: {
-        message: '',
-        variant: 'possitive',
-        playState: 'paused',
-      },
+      floatingTexts: [],
+      floatTextId: 0,
     };
 
     this.changeHp = this.changeHp.bind(this);
@@ -55,12 +54,14 @@ class Character extends Component {
     this.handleLongRest = this.handleLongRest.bind(this);
     this.handleItemAdding = this.handleItemAdding.bind(this);
     this.updateInventory = this.updateInventory.bind(this);
+    this.popFloatText = this.popFloatText.bind(this);
   }
 
   componentDidMount() {
     if (this.userNotAuthenticated()) {
       this.forceAuthentication();
     } else {
+
       const user = this.props.user;
       let charName;
       try {
@@ -244,7 +245,6 @@ class Character extends Component {
    */
   handleShortRest() {
     const hp = Number(this.state.input);
-    this.changeHp(hp);
     const character = this.state.character;
     const abilities = character.abilities;
 
@@ -259,6 +259,7 @@ class Character extends Component {
     }, () => {
       this.updateCharacterInDatabase();
       this.props.loadAbilities(character.abilities);
+      this.changeHp(hp);
     });
   }
 
@@ -338,33 +339,50 @@ class Character extends Component {
 
   floatingHpChange(value) {
     if (value > 0) {
-      this.addFloatingText('+'+value, 'possitive');
+      this.addFloatingText('+'+value, 'positive');
     } else if (value < 0) {
       this.addFloatingText(value, 'negative');
     }
   }
 
   addFloatingText(message, variant) {
-    const floatingText = {
+    let floatingTexts = this.state.floatingTexts;
+
+    if (floatingTexts.length == 3) {
+      floatingTexts = this.popFloatText();
+    }
+    floatingTexts.push({
       message: message,
       variant: variant,
-      playState: 'running',
-    };
+      id: this.state.floatTextId,
+    });
 
-    const emptyFloatingText = {
-      message: '',
-      variant: 'possitive',
-      playState: 'paused',
-    }
+    this.setState((prevState) => ({
+      floatingTexts: floatingTexts,
+      floatTextId: prevState.floatTextId + 1,
+    }));
+  }
 
-    this.setState({
-      floatingText: floatingText,
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          floatingText: emptyFloatingText,
-        });
-      }, 1500);
+  /**
+   * Pops the floatingTexts variable and returns the new value
+   * @return {Array}
+   */
+  popFloatText() {
+    const floatingTexts = this.state.floatingTexts;
+    const newFloatingText = floatingTexts.slice(1, floatingTexts.length);
+
+    return newFloatingText;
+  }
+
+  renderFloatingTexts() {
+    return this.state.floatingTexts.map((text) => {
+      return (
+        <FloatingText
+          key={text.id}
+          message={text.message}
+          variant={text.variant}
+        />
+      );
     });
   }
 
@@ -375,8 +393,9 @@ class Character extends Component {
     } catch(error) { return <div></div>; }
     
     const {hp, level, stats, spells, abilities} = this.state.character;
-    const {input, addingItem, floatingText} = this.state;
+    const {input, addingItem} = this.state;
     const addingItemStatus = addingItem ? 'APPLY' : 'ADD';
+    const floats = this.renderFloatingTexts();
     
     return (
       <div>
@@ -433,7 +452,9 @@ class Character extends Component {
               />
             </Grid>
             <Grid className={css(styles.grid)} item xs={12}>
-              <CustomButton className={styles.grid}>Add Effect</CustomButton>
+              <ModalSection label='Add Effect'>
+                <EffectCreator />
+              </ModalSection>
               <CustomList
                 data={abilities}
                 width={'100%'}
@@ -496,13 +517,7 @@ class Character extends Component {
               </CustomButton>
             </Grid>
           </Grid>
-          <If condition={!!floatingText.message}>
-            <FloatingText
-              message={floatingText.message}
-              variant={floatingText.variant}
-              playState={floatingText.playState}
-            />
-          </If>
+          {floats}
         </If>
       </div>
     );
