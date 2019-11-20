@@ -43,6 +43,7 @@ class Character extends Component {
       addingItem: false,
       floatingTexts: [],
       floatTextId: 0,
+      shortRestInput: '',
     };
 
     this.changeHp = this.changeHp.bind(this);
@@ -51,6 +52,8 @@ class Character extends Component {
     this.useAbility = this.useAbility.bind(this);
     this.useItem = this.useItem.bind(this);
     this.handleShortRest = this.handleShortRest.bind(this);
+    this.handleShortRestInputChange =
+        this.handleShortRestInputChange.bind(this);
     this.handleLongRest = this.handleLongRest.bind(this);
     this.handleItemAdding = this.handleItemAdding.bind(this);
     this.updateInventory = this.updateInventory.bind(this);
@@ -123,6 +126,7 @@ class Character extends Component {
     this.setState({
       character: character,
       input: '',
+      shortRestInput: '',
     }, () => {
       this.floatingHpChange(value);
       this.updateCharacterInDatabase();
@@ -238,13 +242,19 @@ class Character extends Component {
     });
   }
 
+  handleShortRestInputChange(text) {
+    this.setState({
+      shortRestInput: text,
+    });
+  }
+
 
   /**
-   * Restores a given amount of hp taken from the input state variable
+   * Restores a given amount of hp taken from the shortRestInput state variable
    * and all the abilities which have a cooldown of 'short rest'
    */
   handleShortRest() {
-    const hp = Number(this.state.input);
+    const hp = Number(this.state.shortRestInput);
     const character = this.state.character;
     const abilities = character.abilities;
 
@@ -393,7 +403,7 @@ class Character extends Component {
     } catch(error) { return <div></div>; }
     
     const {hp, level, stats, spells, abilities} = this.state.character;
-    const {input, addingItem} = this.state;
+    const {input, addingItem, shortRestInput} = this.state;
     const addingItemStatus = addingItem ? 'APPLY' : 'ADD';
     const floats = this.renderFloatingTexts();
     
@@ -403,7 +413,7 @@ class Character extends Component {
         <If condition={this.state.loaded} els={this.renderLoadingScreen()}>
           <Grid container justify='center' alignItems='flex-start'>
             <Grid className={css(styles.grid)} item xs={6}>
-              <LabeledStat className={styles.stat} label='HP' value={hp.curr}/>
+              <LabeledStat className={styles.stat} label='HP' value={Number(hp.curr)}/>
             </Grid>
             <Grid className={css(styles.grid)} item xs={6}>
               <ButtonSlider
@@ -499,8 +509,8 @@ class Character extends Component {
               <Drawer className={styles.drawer} label='Short Rest'>
                 <SmallInputField
                   label='Add HP'
-                  value={input}
-                  onChange={this.handleInputChange}
+                  value={shortRestInput}
+                  onChange={this.handleShortRestInputChange}
                 />
                 <CustomButton
                   className={styles.shortRestButton}
