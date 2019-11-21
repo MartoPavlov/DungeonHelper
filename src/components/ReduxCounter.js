@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, css} from 'aphrodite';
 import {useSelector, useDispatch} from 'react-redux';
 import Counter from './Counter';
+import CounterValue from './CounterValue';
 import PropTypes from 'prop-types';
 
 /**
@@ -17,7 +18,7 @@ const ReduxCounter = ({extractValue, increment, decrement,
 
   return (
     <div className={css(styles.container, className)}>
-      <span className={css(styles.counter)}>{value}</span>
+      <CounterValue count={value} />
       <Counter
         value={value}
         min={min}

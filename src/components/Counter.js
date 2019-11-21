@@ -9,9 +9,8 @@ import PropTypes from 'prop-types';
  * decrement a value in a range of values [min, max] given
  * as parameters. Highly reuseable.
  * @param {Object} props 
- * @todo Maybe add a className props
  */
-const Counter = ({value, increment, decrement, min = 0, max = 999}) => {
+const Counter = ({value, increment, decrement, min = 0, max = 999, className}) => {
   const shouldRenderMinus = shouldRender(value, min);
   const shouldRenderPlus = shouldRender(value, max);
   
@@ -54,6 +53,7 @@ const styles = StyleSheet.create({
 });
 
 Counter.propTypes = {
+  className: PropTypes.object,
   value: PropTypes.number.isRequired,
   increment: PropTypes.func.isRequired,
   decrement: PropTypes.func.isRequired,

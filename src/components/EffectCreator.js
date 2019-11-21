@@ -7,8 +7,11 @@ import InputField from './InputField';
 import SelectionList from './SelectionList';
 import SmallInputField from './SmallInputField';
 import If from './If';
-import {EFFECT_TYPES, DAMAGE_TYPES} from '../utility/constants';
+import {EFFECT_TYPES, DAMAGE_TYPES, STATS} from '../utility/constants';
 import LabeledCheckbox from './LabeledCheckbox';
+import LebeledCounter from './LebeledCounter';
+import CustomList from './CustomList';
+import CustomButton from './CustomButton';
 
 class EffectCreator extends Component {
   constructor() {
@@ -49,7 +52,7 @@ class EffectCreator extends Component {
         wisdom: 0,
         charisma: 0,
       },
-      resistance: '', // like the damage types
+      resistance: 'none', // like the damage types
     };
 
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -59,6 +62,11 @@ class EffectCreator extends Component {
     this.handleLiniarStackingClick = this.handleLiniarStackingClick.bind(this);
     this.handleDamageChange = this.handleDamageChange.bind(this);
     this.handleDamageTypeChange = this.handleDamageTypeChange.bind(this);
+    this.handlePernamentHpChange = this.handlePernamentHpChange.bind(this);
+    this.handleIncrementing = this.handleIncrementing.bind(this);
+    this.handleDecrementing = this.handleDecrementing.bind(this);
+    this.handleResistanceChange = this.handleResistanceChange.bind(this);
+    this.handleConfirmClick = this.handleConfirmClick.bind(this);
   }
 
   handleNameChange(text) {
@@ -83,7 +91,7 @@ class EffectCreator extends Component {
     const {basics} = this.state;
 
     basics.duration = Number(text);
-    if (isNaN(basics.duration) || basics.duration < 0) basics.duration = 0;
+    if (isNaN(basics.duration)) basics.duration = 0;
     this.setState({
       basics: basics,
     })
@@ -92,12 +100,7 @@ class EffectCreator extends Component {
   handleMaxStacksChange(text) {
     const {basics} = this.state;
 
-    basics.maxStacks = Number(text);
-    if (text === '') {
-      basics.maxStacks = '';
-    } else if (isNaN(basics.maxStacks) || basics.maxStacks < 1) {
-      basics.maxStacks = 1;
-    }
+    basics.maxStacks = text;
     this.setState({
       basics: basics,
     });
@@ -115,10 +118,7 @@ class EffectCreator extends Component {
   handleDamageChange(text) {
     const {hpModification} = this.state;
 
-    hpModification.damage = Number(text);
-    if (isNaN(hpModification.damage)) {
-      hpModification.damage = 0;
-    }
+    hpModification.damage = text;
     this.setState({
       hpModification: hpModification,
     });
@@ -126,23 +126,79 @@ class EffectCreator extends Component {
 
   handleDamageTypeChange(text) {
     const {hpModification} = this.state;
+
     hpModification.typeOfDamage = text;
     this.setState({
       hpModification: hpModification,
     });
   }
 
+  handlePernamentHpChange(text) {
+    const {hpModification} = this.state;
+
+    hpModification.pernamentHp = text;
+    this.setState({
+      hpModification: hpModification,
+    });
+  }
+
+  handleIncrementing(event) {
+    const {stats} = this.state;
+    const stat = this.getStatFromEvent(event);
+
+    stats[stat]++;
+    this.setState({
+      stats: stats,
+    });
+  }
+
+  handleDecrementing(event) {
+    const {stats} = this.state;
+    const stat = this.getStatFromEvent(event);
+
+    stats[stat]--;
+    this.setState({
+      stats: stats,
+    });
+  }
+
+  handleResistanceChange(text) {
+    this.setState({
+      resistance: text,
+    });
+  }
+
+  handleConfirmClick() {
+    console.log('Saving...');
+  }
+
+  getStatFromEvent(event) {
+    try {
+      return event.currentTarget.parentElement.parentElement.children[0]
+        .textContent.toLowerCase();
+    } catch(error) {
+      console.warn('Getting stat failed!!');
+      return 'Nope';
+    }
+  }
+
   render() {
     const {basics, hpModification, stats, resistance} = this.state;
     const {name, type, duration, maxStacks, liniarStacking} = basics;
     const {damage, typeOfDamage, pernamentHp} = hpModification;
-    const {
-      strength, dexterity, constitution, intellect, wisdom, charisma
-    } = stats;
 
     return (
       <div>
-        <CustomHeading>Effect Creation</CustomHeading>
+        <CustomHeading>
+          Effect Creation
+          <CustomButton
+          className={styles.confirmButton}
+          onClick={this.handleConfirmClick}
+          fontSize={14}
+          >
+          ADD
+        </CustomButton>
+        </CustomHeading>
         <InputField
           label='Name'
           value={name}
@@ -183,13 +239,42 @@ class EffectCreator extends Component {
           onChange={this.handleDamageTypeChange}
           value={typeOfDamage}
         />
+        <SmallInputField
+          label="Pernament HP"
+          value={pernamentHp}
+          onChange={this.handlePernamentHpChange}
+        />
+        <CustomList
+          width='100%'
+          data={STATS}
+          renderItem={(stat) => {
+            return (
+              <LebeledCounter
+                label={stat}
+                value={stats[stat.toLowerCase()]}
+                increment={this.handleIncrementing}
+                decrement={this.handleDecrementing}
+                min={-999}
+              />
+            );
+          }}
+        />
+        <SelectionList
+          label="Resistance"
+          items={DAMAGE_TYPES}
+          onChange={this.handleResistanceChange}
+          value={resistance}
+        />
       </div>
     );
   }
 }
 
 const styles = StyleSheet.create({
-
+  confirmButton: {
+    display: 'inline-block',
+    float: 'right',
+  }
 });
 
 const mapStateToProps = (state) => {

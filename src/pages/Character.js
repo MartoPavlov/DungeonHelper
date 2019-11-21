@@ -69,6 +69,10 @@ class Character extends Component {
       let charName;
       try {
         charName = this.props.location.state.name;
+        if (charName.match(/[<>#./]/g)) {
+          console.log('It happend!!');
+          this.forceAuthentication();
+        }
       } catch(error) {
         this.props.history.push('/select');
         return;

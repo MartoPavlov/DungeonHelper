@@ -4,6 +4,11 @@ import CustomTitle from './CustomTitle';
 import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 
+/**
+ * Component that displays a regular CustomCheckbox with a label infront
+ * @param {Object} props
+ * @see CustomCheckbox
+ */
 const LabeledCheckbox = ({className, label, size, checked, onClick}) => {
   const styles = StyleSheet.create({
     checkbox: {
