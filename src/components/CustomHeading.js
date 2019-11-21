@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
 });
 
 CustomHeading.propTypes = {
+  className: PropTypes.object,
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.node,
   ]),
-  title: PropTypes.string,
 };
 
 export default CustomHeading;

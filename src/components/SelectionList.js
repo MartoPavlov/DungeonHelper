@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
  * @see CustomSelection
  * @todo maybe the name can be changed?
  */
-const SelectionList = ({label, items, onChange, className}) => {
+const SelectionList = ({label, items, onChange, className, value}) => {
   
   return (
     <div className={css(styles.container, className)}>
@@ -18,6 +18,7 @@ const SelectionList = ({label, items, onChange, className}) => {
       <CustomSelection
         items={items}
         onChange={onChange}
+        value={value}
       />
     </div>
   );
