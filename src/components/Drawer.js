@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomButton from './CustomButton';
 import If from './If';

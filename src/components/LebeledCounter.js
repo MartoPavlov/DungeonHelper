@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 const LebeledCounter = ({className, label, value, increment, decrement, min,
     max}) => {
   return (
-    <div className={css(className)}>
+    <div className={css(styles.labeledCounter, className)}>
       <CustomTitle>{label}</CustomTitle>
       <CounterValue count={value} />
       <Counter
@@ -21,6 +21,13 @@ const LebeledCounter = ({className, label, value, increment, decrement, min,
     </div>
   );
 };
+
+const styles = StyleSheet.create({
+  labeledCounter: {
+    marginTop: 5,
+    marginBottom: 5,
+  }
+});
 
 LebeledCounter.propTypes = {
   className: PropTypes.object,

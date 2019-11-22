@@ -26,7 +26,7 @@ const updateDurations = (state) => {
 
   for (let i=0; i<effects.length; i++) {
     effects[i].basics.duration--;
-    if (effects[i].basics.duration == 0) {
+    if (effects[i].basics.duration === 0) {
       toRemove.push(effects[i].basics.name);
     }
   }

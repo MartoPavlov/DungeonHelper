@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {css, StyleSheet} from 'aphrodite';
 import Grid from '@material-ui/core/Grid';
@@ -362,7 +361,7 @@ class Character extends Component {
   addFloatingText(message, variant) {
     let floatingTexts = this.state.floatingTexts;
 
-    if (floatingTexts.length == 3) {
+    if (floatingTexts.length === 3) {
       floatingTexts = this.popFloatText();
     }
     floatingTexts.push({
@@ -467,7 +466,7 @@ class Character extends Component {
             </Grid>
             <Grid className={css(styles.grid)} item xs={12}>
               <ModalSection label='Add Effect'>
-                <EffectCreator />
+                <EffectCreator character={name} />
               </ModalSection>
               <CustomList
                 data={abilities}
