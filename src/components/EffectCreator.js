@@ -33,6 +33,7 @@ class EffectCreator extends Component {
          */
         duration: 0,
         maxStacks: 1,
+        currentStacks: 1,
         /*
           This option is available only if maxStacks are > 1. If true can
           calculate the hpModification and stats just by using current
@@ -105,7 +106,7 @@ class EffectCreator extends Component {
   handleMaxStacksChange(text) {
     const {basics} = this.state;
 
-    basics.maxStacks = text;
+    basics.maxStacks = Number(text);
     this.setState({
       basics: basics,
     });
@@ -123,7 +124,7 @@ class EffectCreator extends Component {
   handleDamageChange(text) {
     const {hpModification} = this.state;
 
-    hpModification.damage = text;
+    hpModification.damage = Number(text);
     this.setState({
       hpModification: hpModification,
     });
@@ -141,7 +142,7 @@ class EffectCreator extends Component {
   handlePernamentHpChange(text) {
     const {hpModification} = this.state;
 
-    hpModification.pernamentHp = text;
+    hpModification.pernamentHp = Number(text);
     this.setState({
       hpModification: hpModification,
     });
@@ -176,6 +177,8 @@ class EffectCreator extends Component {
   handleConfirmClick() {
     if (this.effectIsValid()) {
       this.addEffectInDatabase();
+      this.props.enqueueSnackbar('Succesfuly added the effect',
+        {variant: 'success'});
     }
   }
 
@@ -231,21 +234,98 @@ class EffectCreator extends Component {
     return valid;
   }
 
+  hasThisEffect(name, effects) {
+    for (let i=0; i<effects.length; i++) {
+      if (name === effects[i].basics.name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Use this function only if hasThisEffect returns true!
+   * If the effect is stackable this function will increace the number of
+   * current stacks and also reset the duration. If not only resets the
+   * duration
+   * @param {Object} effect 
+   * @param {Array} effects
+   * @return {Array} changed effects
+   * @see hasThisEffect
+   */
+  stackAndResetEffect(effect, effects) {
+    const {basics} = effect;
+
+    for (let i=0; i<effects.length; i++) {
+      const effectsBasics = effects[i].basics;
+
+      if (basics.name === effectsBasics.name) {
+        if (effectsBasics.currentStacks < effectsBasics.maxStacks) {
+          effectsBasics.currentStacks++;
+        }
+        effectsBasics.duration = 
+            Math.max(basics.duration, effectsBasics.duration);
+        effects[i] = effectsBasics;
+      }
+    }
+    return effects;
+  }
+
   addEffectInDatabase() {
     // later change this to player's uid
     const user = this.props.user.uid;
     const character = this.props.character;
+    const state = this.state;
+    let val;
 
-    Firebase.database().ref('characterInfo/'+user+'/'+character).on('value', (data) => {
-      const val = data.val();
+    Firebase.database().ref('testing/'+user+'/'+character).once('value', (data) => {
+      val = data.val();
 
       if (!val) return;
       if (!val.effects) {
         val.effects = [];
+        val.effects.push(state);
+      } else {
+        if (this.hasThisEffect(state.basics.name, val.effects)) {
+          val = {
+            ...val, effects: this.stackAndResetEffect(state, val.effects)
+          };
+        } else {
+          val.effects.push(state);
+        }
       }
-      val.effects.push(this.state);
+      Firebase.database().ref('testing/'+user+'/'+character).set(val).then(() => this.resetState())
+      .catch((error) => console.warn(error.message));
+    });
+  }
 
-      Firebase.database().ref('testing/'+user+'/'+character).set(val);
+  resetState() {
+    console.log('Here');
+    const basics = {
+      name: '',
+      type: 'none',
+      duration: 0,
+      maxStacks: 1,
+      liniarStacking: false,
+    };
+    const hpModification = {
+      damage: 0,
+      typeOfDamage: 'none',
+      pernamentHp: 0,
+    };
+    const stats = {
+      strength: 0,
+      dexterity: 0,
+      constitution: 0,
+      intellect: 0,
+      wisdom: 0,
+      charisma: 0,
+    };
+    this.setState({
+      basics: basics,
+      hpModification: hpModification,
+      stats: stats,
+      resistance: 'none',
     });
   }
 
@@ -291,14 +371,6 @@ class EffectCreator extends Component {
               value={maxStacks}
               onChange={this.handleMaxStacksChange}
             />
-            <If condition={maxStacks>1}>
-              <LabeledCheckbox
-                label="Liniar Stacking"
-                size={15}
-                checked={liniarStacking} 
-                onClick={this.handleLiniarStackingClick}
-              />
-            </If>
           </Grid>
           <Grid item xs={4}>
             <CustomTitle className={styles.sectionTitle}>
@@ -322,6 +394,14 @@ class EffectCreator extends Component {
               value={pernamentHp}
               onChange={this.handlePernamentHpChange}
             />
+            <If condition={maxStacks>1}>
+              <LabeledCheckbox
+                label="Liniar Stacking"
+                size={15}
+                checked={liniarStacking} 
+                onClick={this.handleLiniarStackingClick}
+              />
+            </If>
           </Grid>
         </Grid>
         <CustomTitle className={styles.sectionTitle}>
