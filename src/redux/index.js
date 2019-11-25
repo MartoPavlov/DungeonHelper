@@ -11,3 +11,6 @@ export {
 } from './invenotry/inventoryActions';
 export {setUser} from './user/userActions';
 export {setBasicStats} from './basicStat/basicStatActions';
+export {
+  addEffect, updateDurations, resetEffects, loadEffects
+} from './effect/effectActions';

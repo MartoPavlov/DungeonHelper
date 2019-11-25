@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * Component that renders a checkbox with on check animation
  * @param {Object} props 
  */
-const CustomCheckbox = ({className, size, checked, onClick}) => {
+const CustomCheckbox = ({className, size = 20, checked, onClick}) => {
   const animateCheck = {
     'from': {
       opacity: 0,

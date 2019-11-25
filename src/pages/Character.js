@@ -22,9 +22,12 @@ import Drawer from '../components/Drawer';
 import SmallInputField from '../components/SmallInputField';
 import InventoryCreator from '../components/InventoryCreator';
 import CustomButton from '../components/CustomButton';
+import FloatingText from '../components/FloatingText';
+import EffectCreator from '../components/EffectCreator';
 
 /**
  * Page responsible for ingame character updates. Still not completed!
+ * @todo Add Effects, End round, HP damage system and Level up!
  */
 class Character extends Component {
   constructor() {
@@ -37,6 +40,9 @@ class Character extends Component {
       input: '',
       loaded: false,
       addingItem: false,
+      floatingTexts: [],
+      floatTextId: 0,
+      shortRestInput: '',
     };
 
     this.changeHp = this.changeHp.bind(this);
@@ -45,19 +51,27 @@ class Character extends Component {
     this.useAbility = this.useAbility.bind(this);
     this.useItem = this.useItem.bind(this);
     this.handleShortRest = this.handleShortRest.bind(this);
+    this.handleShortRestInputChange =
+        this.handleShortRestInputChange.bind(this);
     this.handleLongRest = this.handleLongRest.bind(this);
     this.handleItemAdding = this.handleItemAdding.bind(this);
     this.updateInventory = this.updateInventory.bind(this);
+    this.popFloatText = this.popFloatText.bind(this);
   }
 
   componentDidMount() {
     if (this.userNotAuthenticated()) {
       this.forceAuthentication();
     } else {
+
       const user = this.props.user;
       let charName;
       try {
         charName = this.props.location.state.name;
+        if (charName.match(/[<>#./]/g)) {
+          console.log('It happend!!');
+          this.forceAuthentication();
+        }
       } catch(error) {
         this.props.history.push('/select');
         return;
@@ -115,7 +129,9 @@ class Character extends Component {
     this.setState({
       character: character,
       input: '',
+      shortRestInput: '',
     }, () => {
+      this.floatingHpChange(value);
       this.updateCharacterInDatabase();
       this.props.loadBasics({
         name: character.name,
@@ -229,14 +245,19 @@ class Character extends Component {
     });
   }
 
+  handleShortRestInputChange(text) {
+    this.setState({
+      shortRestInput: text,
+    });
+  }
+
 
   /**
-   * Restores a given amount of hp taken from the input state variable
+   * Restores a given amount of hp taken from the shortRestInput state variable
    * and all the abilities which have a cooldown of 'short rest'
    */
   handleShortRest() {
-    const hp = Number(this.state.input);
-    this.changeHp(hp);
+    const hp = Number(this.state.shortRestInput);
     const character = this.state.character;
     const abilities = character.abilities;
 
@@ -251,6 +272,7 @@ class Character extends Component {
     }, () => {
       this.updateCharacterInDatabase();
       this.props.loadAbilities(character.abilities);
+      this.changeHp(hp);
     });
   }
 
@@ -328,6 +350,55 @@ class Character extends Component {
     this.props.enqueueSnackbar(error, {variant: 'error'});
   }
 
+  floatingHpChange(value) {
+    if (value > 0) {
+      this.addFloatingText('+'+value, 'positive');
+    } else if (value < 0) {
+      this.addFloatingText(value, 'negative');
+    }
+  }
+
+  addFloatingText(message, variant) {
+    let floatingTexts = this.state.floatingTexts;
+
+    if (floatingTexts.length === 3) {
+      floatingTexts = this.popFloatText();
+    }
+    floatingTexts.push({
+      message: message,
+      variant: variant,
+      id: this.state.floatTextId,
+    });
+
+    this.setState((prevState) => ({
+      floatingTexts: floatingTexts,
+      floatTextId: prevState.floatTextId + 1,
+    }));
+  }
+
+  /**
+   * Pops the floatingTexts variable and returns the new value
+   * @return {Array}
+   */
+  popFloatText() {
+    const floatingTexts = this.state.floatingTexts;
+    const newFloatingText = floatingTexts.slice(1, floatingTexts.length);
+
+    return newFloatingText;
+  }
+
+  renderFloatingTexts() {
+    return this.state.floatingTexts.map((text) => {
+      return (
+        <FloatingText
+          key={text.id}
+          message={text.message}
+          variant={text.variant}
+        />
+      );
+    });
+  }
+
   render() {
     let name;
     try {
@@ -335,8 +406,9 @@ class Character extends Component {
     } catch(error) { return <div></div>; }
     
     const {hp, level, stats, spells, abilities} = this.state.character;
-    const {input, addingItem} = this.state;
-    const addingItemStatus = addingItem ? 'APPLY' : 'ADD'; 
+    const {input, addingItem, shortRestInput} = this.state;
+    const addingItemStatus = addingItem ? 'APPLY' : 'ADD';
+    const floats = this.renderFloatingTexts();
     
     return (
       <div>
@@ -344,7 +416,7 @@ class Character extends Component {
         <If condition={this.state.loaded} els={this.renderLoadingScreen()}>
           <Grid container justify='center' alignItems='flex-start'>
             <Grid className={css(styles.grid)} item xs={6}>
-              <LabeledStat className={styles.stat} label='HP' value={hp.curr}/>
+              <LabeledStat className={styles.stat} label='HP' value={Number(hp.curr)}/>
             </Grid>
             <Grid className={css(styles.grid)} item xs={6}>
               <ButtonSlider
@@ -393,6 +465,9 @@ class Character extends Component {
               />
             </Grid>
             <Grid className={css(styles.grid)} item xs={12}>
+              <ModalSection label='Add Effect'>
+                <EffectCreator character={name} />
+              </ModalSection>
               <CustomList
                 data={abilities}
                 width={'100%'}
@@ -437,8 +512,8 @@ class Character extends Component {
               <Drawer className={styles.drawer} label='Short Rest'>
                 <SmallInputField
                   label='Add HP'
-                  value={input}
-                  onChange={this.handleInputChange}
+                  value={shortRestInput}
+                  onChange={this.handleShortRestInputChange}
                 />
                 <CustomButton
                   className={styles.shortRestButton}
@@ -455,6 +530,7 @@ class Character extends Component {
               </CustomButton>
             </Grid>
           </Grid>
+          {floats}
         </If>
       </div>
     );

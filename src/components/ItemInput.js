@@ -3,6 +3,7 @@ import {css, StyleSheet} from 'aphrodite';
 import CustomInput from './CustomInput';
 import Counter from './Counter';
 import CustomTitle from './CustomTitle';
+import CounterValue from './CounterValue';
 import PropTypes from 'prop-types';
 
 /**
@@ -17,7 +18,7 @@ const ItemInput = ({className, label, name, count, onChange, increment, decremen
     <div className={css(styles.container, className)}>
       <CustomTitle>{label}</CustomTitle>
       <CustomInput value={name} onChange={onChange} />
-      <span className={css(styles.counter)}>{count}</span>
+      <CounterValue count={count} />
       <Counter value={count} increment={increment} decrement={decrement} />
     </div>
   );

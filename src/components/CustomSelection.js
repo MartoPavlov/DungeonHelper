@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * Component that renders a selection of items
  * @param {Object} props
  */
-const CustomSelection = ({className, items, onChange}) => {
+const CustomSelection = ({className, items, onChange, value}) => {
   const options = items.map((item) => {
     return <option key={item} value={item}>{item}</option>
   });
@@ -14,7 +14,9 @@ const CustomSelection = ({className, items, onChange}) => {
   return (
     <select
         className={css(styles.selectionList, className)}
-        onChange={(event) => onChange(event.target.value)}>
+        onChange={(event) => onChange(event.target.value)}
+        value={value}
+    >
         {options}
     </select>
   );
@@ -35,6 +37,11 @@ CustomSelection.propTypes = {
   className: PropTypes.object,
   items: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
 };
 
 export default CustomSelection;

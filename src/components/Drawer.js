@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {css, StyleSheet} from 'aphrodite';
 import CustomButton from './CustomButton';
 import If from './If';
@@ -37,17 +37,6 @@ const Drawer = ({className, label, childHeight=40, children}) => {
       marginTop: 10,
     }
   });
-  const handleChange = () => {
-    setShown(false);
-  }
-  useEffect(() => {
-    window.addEventListener('change', handleChange);
-
-    return () => {
-      window.removeEventListener('change', handleChange);
-    };
-  });
-
   const contentStyle = shown ? styles.content : '';
 
   return (
